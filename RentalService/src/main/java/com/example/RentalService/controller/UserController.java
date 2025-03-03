@@ -2,6 +2,8 @@ package com.example.RentalService.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -33,6 +35,12 @@ public class UserController {
 	public String homePge() {
 		return "Hello...";
 	}
+	
+	 @GetMapping("/check-role")
+	    public String checkRole() {
+	        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+	        return "User: " + authentication.getName() + ", Roles: " + authentication.getAuthorities();
+	    }
 	
 //	@DeleteMapping("/user/{name}")
 //	public Users deleteByName(@PathVariable String name) {

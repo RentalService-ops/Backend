@@ -35,18 +35,20 @@ public class JWTService {
         }
     }
 
-    public String generateToken(String username) {
+    public String generateToken(String userId, String username, String role) {
         Map<String, Object> claims = new HashMap<>();
+        claims.put("user_id", userId);  // ✅ Add user_id to claims
+        System.out.println(role);
+        claims.put("role", role);       // ✅ Keep role as a claim
+
         return Jwts.builder()
-                .claims()
-                .add(claims)
-                .subject(username)
+                .claims(claims)
+                .subject(username)  // Keep only username as subject
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + 60 * 60 * 30))
-                .and()
+                .expiration(new Date(System.currentTimeMillis() + (1000 * 60 * 60 * 30))) // 30 hours
+                
                 .signWith(getKey())
                 .compact();
-
     }
 
     private SecretKey getKey() {

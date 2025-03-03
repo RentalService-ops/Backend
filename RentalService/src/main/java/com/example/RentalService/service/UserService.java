@@ -1,6 +1,8 @@
 package com.example.RentalService.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -11,6 +13,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import com.example.RentalService.model.Users;
 import com.example.RentalService.repo.UserRepositry;
@@ -56,28 +60,35 @@ public class UserService {
 //	}
 
 	
-	public ResponseEntity<?> verify(Users user, HttpServletResponse response) {
+	@PostMapping("/login")
+	public ResponseEntity<?> verify(@RequestBody Users user, HttpServletResponse response) {
 	    Authentication authentication = authManager.authenticate(
 	        new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword()));
 
 	    if (authentication.isAuthenticated()) {
-	        String jwtToken = jwtService.generateToken(user.getEmail());
+	        System.out.println("Authenticated");
 
-	        // Create HttpOnly Cookie
+	        Users userDemo = repo.findByEmail(user.getEmail()).get();
+	        String jwtToken = jwtService.generateToken(String.valueOf(userDemo.getId()), userDemo.getEmail(), userDemo.getRole().toLowerCase());
+
 	        ResponseCookie jwtCookie = ResponseCookie.from("jwtToken", jwtToken)
-	                .httpOnly(true)  // ✅ Prevents JavaScript access
-	                .secure(false)   // ❌ Set to true in production (for HTTPS)
-	                .path("/")       // ✅ Makes cookie available to all endpoints
-	                .maxAge(86400)   // ✅ 1 day expiration
-	                .sameSite("Lax") // ✅ Helps with CSRF protection
+	                .httpOnly(false)
+	                .secure(false)
+	                .path("/")
+	                .maxAge(86400)
+	                .sameSite("Lax")
 	                .build();
 
-	        // Add cookie to response
 	        response.addHeader(HttpHeaders.SET_COOKIE, jwtCookie.toString());
 
-	        return ResponseEntity.ok("Login Successful");
+	        Map<String, Object> responseBody = new HashMap<>();
+	        responseBody.put("token", jwtToken);
+	        responseBody.put("message", "Login successful");
+
+	        return ResponseEntity.ok(responseBody);
 	    }
-	    return ResponseEntity.status(401).body("Invalid Credentials");
+
+	    return ResponseEntity.status(401).body(Map.of("error", "Invalid Credentials"));
 	}
 
 }
