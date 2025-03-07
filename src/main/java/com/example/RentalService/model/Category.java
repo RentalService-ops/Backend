@@ -1,9 +1,5 @@
 package com.example.RentalService.model;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -18,11 +14,11 @@ public class Category {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int categoryId;  // Changed to int
+    private int categoryId;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "user_id", nullable = false)
-    @JsonIgnore 
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "user_id", nullable = false) // Fixed foreign key mapping
+//    @JsonIgnore 
     private Users user;
 
     @Column(nullable = false, length = 255)
@@ -55,14 +51,6 @@ public class Category {
         return user;
     }
 
-    // Set the user using user_id from JSON input
-    @JsonCreator
-    public void setUser(@JsonProperty("user") int userId) {
-        // Manually set the user based on user_id
-        this.user = new Users();
-        this.user.setId(userId);  // Set userId directly
-    }
-
     public void setUser(Users user) {
         this.user = user;
     }
@@ -81,5 +69,11 @@ public class Category {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    @Override
+    public String toString() {
+        return "Category [categoryId=" + categoryId + ", user=" + user + ", name=" + name + ", description="
+                + description + "]";
     }
 }

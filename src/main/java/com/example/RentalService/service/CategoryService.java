@@ -20,17 +20,39 @@ public class CategoryService {
 	@Autowired
 	private UserService userService;
 	
+//	public Category addCategory(Category category) {
+//		System.out.println("in");
+////		Users user = userRepositry.findById(category.getUser().getId());
+//		System.out.println(category.toString());
+//
+//		Users user = userService.findUsreById(category.getUser().getId());
+//		System.out.println(user);
+//		if(user != null) {
+//			category.setUser(user);
+//		}
+//		return repo.save(category);
+//	}
+	
 	public Category addCategory(Category category) {
-		
-//		Users user = userRepositry.findById(category.getUser().getId());
-//		
-		Users user = userService.findUsreById(category.getUser().getId());
-		
-		if(user != null) {
-			category.setUser(user);
-		}
-		return repo.save(category);
+	    System.out.println("In addCategory method");
+	    System.out.println("Category Received: " + category);
+
+	    if (category.getUser() == null || category.getUser().getId() == 0) {
+	        throw new RuntimeException("User ID is required but was null or 0.");
+	    }
+
+	    // Fetch the user from DB
+	    Users user = userService.findUsreById(category.getUser().getId());
+	    System.out.println("Fetched User: " + user);
+
+	    if (user == null) {
+	        throw new RuntimeException("User with ID " + category.getUser().getId() + " not found.");
+	    }
+
+	    category.setUser(user); // Assign the fetched user
+	    return repo.save(category);
 	}
+
 	
 	public ResponseEntity<?> deleteCategory(int id) {
 		
@@ -47,4 +69,10 @@ public class CategoryService {
 	public List<Category> getAllcategory(){
 		return repo.findAll();
 	}
+	
+	public List<Category> getCategoryByUserId(int id){
+	    return repo.findByUserId(id);
+
+	}
+	
 }

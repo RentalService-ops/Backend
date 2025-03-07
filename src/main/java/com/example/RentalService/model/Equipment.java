@@ -4,8 +4,6 @@ import java.math.BigDecimal;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -40,10 +38,7 @@ public class Equipment {
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal pricePerDay;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private AvailabilityStatus availabilityStatus;
-
+   
     @Column(length = 255)
     private String imageUrl;
 
@@ -51,14 +46,13 @@ public class Equipment {
     public Equipment() {
     }
 
-    public Equipment(Users user, Category category, String name, String description, int quantity, BigDecimal pricePerDay, AvailabilityStatus availabilityStatus, String imageUrl) {
+    public Equipment(Users user, Category category, String name, String description, int quantity, BigDecimal pricePerDay, String imageUrl) {
         this.user = user;
         this.category = category;
         this.name = name;
         this.description = description;
         this.quantity = quantity;
         this.pricePerDay = pricePerDay;
-        this.availabilityStatus = availabilityStatus;
         this.imageUrl = imageUrl;
     }
 
@@ -119,14 +113,7 @@ public class Equipment {
         this.pricePerDay = pricePerDay;
     }
 
-    public AvailabilityStatus getAvailabilityStatus() {
-        return availabilityStatus;
-    }
-
-    public void setAvailabilityStatus(AvailabilityStatus availabilityStatus) {
-        this.availabilityStatus = availabilityStatus;
-    }
-
+    
     public String getImageUrl() {
         return imageUrl;
     }

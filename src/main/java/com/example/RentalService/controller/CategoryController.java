@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -18,26 +17,66 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.RentalService.model.Category;
+import com.example.RentalService.model.Users;
 import com.example.RentalService.service.CategoryService;
+import com.example.RentalService.service.UserService;
 
 @RestController
 @RequestMapping("/api/rental/")
-@PreAuthorize("hasAuthority('ROLE_rental')")
+//@PreAuthorize("hasAuthority('ROLE_rental')")
 @CrossOrigin
 public class CategoryController {
 
 	@Autowired
 	private CategoryService service;
 	
-	@PostMapping("/addCategory")
-	public ResponseEntity<?> addCategory(@RequestBody Category category) {
-		Category category1 = service.addCategory(category);
-		
-		if(category1 != null) {
-			return new ResponseEntity<>(category1,HttpStatus.CREATED);
-		}
-		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-	}
+	@Autowired
+	private UserService userService;
+	 @PostMapping("/addCategory")
+	    public ResponseEntity<?> addCategory(@RequestBody Category category) {
+	        System.out.println("Received Request: " + category);
+
+	        if (category.getUser() == null || category.getUser().getId() <= 0) {
+	            return ResponseEntity.badRequest().body("Valid User ID is required");
+	        }
+
+	        Users user = userService.findUsreById(category.getUser().getId());
+	        if (user == null) {
+	            return ResponseEntity.badRequest().body("User not found");
+	        }
+
+	        category.setUser(user);
+	        Category savedCategory = service.addCategory(category);
+	        
+	        return ResponseEntity.status(HttpStatus.CREATED).body(savedCategory);
+	    }
+
+
+//	
+	
+//	@PostMapping("/addCategory")
+//	public ResponseEntity<?> addCategory(@RequestBody Map<String, Object> body) {
+//	    System.out.println("Received Request: " + body);
+//
+//	    int userId = (int) body.get("user_id");
+//	    String name = (String) body.get("name");
+//	    String description = (String) body.get("description");
+//
+//	    Users user = userService.findUsreById(userId);
+//	    
+//	    if (user == null) {
+//	        System.out.println("User not found with ID: " + userId);
+//	        return new ResponseEntity<>("User not found", HttpStatus.BAD_REQUEST);
+//	    }
+//
+//	    Category category = new Category(user, name, description);
+//	    Category savedCategory = service.addCategory(category);
+//
+//	    return new ResponseEntity<>(savedCategory, HttpStatus.CREATED);
+//	}
+
+	
+
 	
 	 @GetMapping("/check-role")
 	    public String checkRole() {
@@ -59,5 +98,10 @@ public class CategoryController {
 	@GetMapping("/getAllCategory")
 	public ResponseEntity<List<Category>> getAllCategory(){
 		return new ResponseEntity<>(service.getAllcategory(), HttpStatus.OK);
+	}
+	
+	@GetMapping("/category/{id}")
+	public List<Category> getCategoryByUser(@PathVariable int id){
+		return service.getCategoryByUserId(id);
 	}
 }
