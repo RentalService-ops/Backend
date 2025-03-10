@@ -7,7 +7,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,7 +23,7 @@ import com.example.RentalService.service.UserService;
 @RestController
 @RequestMapping("/api/rental/")
 //@PreAuthorize("hasAuthority('ROLE_rental')")
-@CrossOrigin
+//@CrossOrigin
 public class CategoryController {
 
 	@Autowired
@@ -34,7 +33,6 @@ public class CategoryController {
 	private UserService userService;
 	 @PostMapping("/addCategory")
 	    public ResponseEntity<?> addCategory(@RequestBody Category category) {
-	        System.out.println("Received Request: " + category);
 
 	        if (category.getUser() == null || category.getUser().getId() <= 0) {
 	            return ResponseEntity.badRequest().body("Valid User ID is required");

@@ -108,6 +108,7 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/login", "/register").permitAll()
                 .requestMatchers("/api/rental/**").hasAuthority("ROLE_rental") 
+                .requestMatchers("/api/equipment/**").hasAuthority("ROLE_rental")
                 .anyRequest().authenticated()
             )
             .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class); // Add JWT filter

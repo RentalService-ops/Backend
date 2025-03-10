@@ -34,8 +34,6 @@ public class CategoryService {
 //	}
 	
 	public Category addCategory(Category category) {
-	    System.out.println("In addCategory method");
-	    System.out.println("Category Received: " + category);
 
 	    if (category.getUser() == null || category.getUser().getId() == 0) {
 	        throw new RuntimeException("User ID is required but was null or 0.");
@@ -43,7 +41,6 @@ public class CategoryService {
 
 	    // Fetch the user from DB
 	    Users user = userService.findUsreById(category.getUser().getId());
-	    System.out.println("Fetched User: " + user);
 
 	    if (user == null) {
 	        throw new RuntimeException("User with ID " + category.getUser().getId() + " not found.");
