@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.RentalService.model.Category;
 import com.example.RentalService.model.Users;
 import com.example.RentalService.service.CategoryService;
-import com.example.RentalService.service.UserService;
+import com.example.RentalService.service.AuthService;
 
 @RestController
 @RequestMapping("/api/rental/")
@@ -30,7 +30,7 @@ public class CategoryController {
 	private CategoryService service;
 	
 	@Autowired
-	private UserService userService;
+	private AuthService userService;
 	 @PostMapping("/addCategory")
 	    public ResponseEntity<?> addCategory(@RequestBody Category category) {
 

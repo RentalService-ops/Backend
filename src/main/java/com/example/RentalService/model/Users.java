@@ -18,6 +18,7 @@ public class Users {
 	private String email;
 	private String role;
 	private BigInteger phoneNumber;
+	private String address;
 	
 	
 	public String getUsername() {
@@ -66,6 +67,12 @@ public class Users {
 	}
 	public void setId(int id) {
 		this.id = id;
+	}
+	public String getAddress() {
+		return address;
+	}
+	public void setAddress(String address) {
+		this.address = address;
 	}
 	
 	

@@ -8,23 +8,30 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.RentalService.model.CustomerQuery;
 import com.example.RentalService.model.Users;
-import com.example.RentalService.service.UserService;
+import com.example.RentalService.service.CustomerQueryService;
+import com.example.RentalService.service.AuthService;
 
 import jakarta.servlet.http.HttpServletResponse;
 
 @RestController
+@RequestMapping("")
 @CrossOrigin
-public class UserController {
+public class AuthController {
 
 	
 	@Autowired
-	private UserService service;
+	private AuthService service;
 	
 	@Autowired
 	HttpServletResponse response;
+	
+	@Autowired
+	private CustomerQueryService customerService;
 	
 	@PostMapping("/register")
 	public Users register(@RequestBody Users user) {
@@ -51,5 +58,11 @@ public class UserController {
 	public ResponseEntity<?> login(@RequestBody Users user) {
 		
 		return service.verify(user,response);
+	}
+	
+	@PostMapping("/contact")
+	public ResponseEntity<?> saveQuery(@RequestBody CustomerQuery query){
+		customerService.saveQuery(query);
+		return ResponseEntity.ok("query saved");
 	}
 }

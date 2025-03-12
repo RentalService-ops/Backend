@@ -16,17 +16,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import com.example.RentalService.model.Users;
-import com.example.RentalService.repo.UserRepositry;
+import com.example.RentalService.repo.UserRepository;
 
 import jakarta.servlet.http.HttpServletResponse;
 
 
 
 @Service
-public class UserService {
+public class AuthService {
 
 	@Autowired
-	private UserRepositry repo;
+	private UserRepository repo;
 	
 	@Autowired
 	AuthenticationManager authManager;

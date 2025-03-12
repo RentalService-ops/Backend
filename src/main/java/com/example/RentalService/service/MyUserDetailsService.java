@@ -7,15 +7,15 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.example.RentalService.model.Users;
-import com.example.RentalService.repo.UserRepositry;
+import com.example.RentalService.repo.UserRepository;
 
 @Service
 public class MyUserDetailsService implements UserDetailsService {
 
     @Autowired
-    private UserRepositry repo;
+    private UserRepository repo;
 
-    public MyUserDetailsService(UserRepositry repo) {
+    public MyUserDetailsService(UserRepository repo) {
     	this.repo = repo;
     }
     
