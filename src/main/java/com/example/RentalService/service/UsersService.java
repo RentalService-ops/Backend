@@ -19,10 +19,6 @@ public class UsersService {
 		return repo.findById(id).get();
 	}
 	
-	public Users getRenterByRenterId(int id) {
-		return repo.findById(id).get();
-	}
-	
 	public Users saveUser(Users user) {
 		return repo.save(user);
 	}

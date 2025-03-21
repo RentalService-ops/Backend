@@ -68,7 +68,7 @@
 //    	return config.getAuthenticationManager();
 //    }
 //}
-
+//
 package com.example.RentalService.config;
 
 import java.util.List;
@@ -80,6 +80,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -92,6 +93,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @EnableWebSecurity
 @Configuration
+@EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
     @Autowired
@@ -107,8 +109,7 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable()) // Disable CSRF (only for APIs, enable it if using sessions)
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/login", "/register","/contact").permitAll()
-                .requestMatchers("/api/rental/**").hasAuthority("ROLE_rental") 
-                .requestMatchers("/api/equipment/**").hasAuthority("ROLE_rental")
+                .requestMatchers("/api/rental/**").hasAuthority("ROLE_rental")//Category routes: /api/rental
                 .anyRequest().authenticated()
             )
             .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class); // Add JWT filter
