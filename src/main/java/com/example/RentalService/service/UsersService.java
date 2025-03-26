@@ -16,7 +16,8 @@ public class UsersService {
 	}
 	
 	public Users getUserByUserId(int id) {
-		return repo.findById(id).get();
+		Users user=repo.findById(id).get();
+		return user;
 	}
 	
 	public Users saveUser(Users user) {

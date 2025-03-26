@@ -35,6 +35,10 @@ public class Rental_Bookings {
     @ManyToOne(fetch=FetchType.EAGER, optional=false)
     @JoinColumn(name="equipment_id",nullable=false)
     private Equipment equipment;
+    
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "address_id", referencedColumnName = "id", nullable = false)
+    private Address address; // Address for delivery or pickup
 
     // Property to store the quantity of equipment being booked
     @Column(nullable=false)
@@ -49,6 +53,7 @@ public class Rental_Bookings {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private BookingStatus status;
+   
 
 
     // Getters and Setters
@@ -154,5 +159,13 @@ public class Rental_Bookings {
     public void setStatus(BookingStatus status) {
         this.status = status;
     }
+    
 
+    public Address getAddress() {
+        return address;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
+    }
 }

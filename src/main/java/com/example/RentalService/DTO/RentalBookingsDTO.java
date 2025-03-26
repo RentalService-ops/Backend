@@ -104,4 +104,5 @@ public class RentalBookingsDTO {
 		this.status = status;
 	}
 
+
 }

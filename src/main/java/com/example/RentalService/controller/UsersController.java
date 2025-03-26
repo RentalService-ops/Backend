@@ -42,7 +42,7 @@ public class UsersController {
 	 * @Param id: id of the User whose user details are to be fetched.
 	 * Returns the user,renter with the corresponding id provided.
 	 * */
-	@GetMapping(value={"/getUser"})
+	@GetMapping("/getUser")
 	@PreAuthorize("hasRole('rental') or hasRole('admin') or hasRole('user')")
 	public UsersDTO getUserByUserId(@RequestParam("id") int id) {
 		return new UsersDTO(service.getUserByUserId(id));

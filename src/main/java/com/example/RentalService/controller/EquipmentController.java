@@ -1,12 +1,17 @@
 package com.example.RentalService.controller;
 
+import java.net.MalformedURLException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -29,7 +34,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * */
 @RestController
 @RequestMapping("/api/equipment")
-@CrossOrigin
 public class EquipmentController {
 	
 	//Service for interacting with Equipment entity.
@@ -99,5 +103,26 @@ public class EquipmentController {
     public ResponseEntity<String> deleteById(@PathVariable("id") int id) {
        this.equipmentService.deleteEquipment(id);
        return ResponseEntity.ok("deleted Equipment");
+    }
+    
+    /**
+     * Retrieves an image file by its filename.
+     * @param filename Name of the image file.
+     * @return Response entity containing the image resource or a not found response.
+     * @throws MalformedURLException If the file path is incorrect.
+     */
+    @PreAuthorize("hasAnyRole('ROLE_user', 'ROLE_rental')")
+    @GetMapping("/{filename}")
+    public ResponseEntity<Resource> getImage(@PathVariable String filename) throws MalformedURLException {
+        Path imagePath = Paths.get("C:\\Users\\700048\\Desktop\\Backend\\src\\Image\\" + filename);
+        Resource resource = new UrlResource(imagePath.toUri());
+
+        if (resource.exists()) {
+            return ResponseEntity.ok()
+                    .contentType(MediaType.IMAGE_JPEG) // Change if using PNG, etc.
+                    .body(resource);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 }
