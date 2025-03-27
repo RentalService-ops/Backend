@@ -23,7 +23,7 @@ public class EquipmentService {
     @Autowired
     private EquipmentRepo equipmentRepo;
 
-    private static final String IMAGE_DIRECTORY = "C:\\Users\\700048\\Desktop\\Backend\\src\\Image";
+    private static final String IMAGE_DIRECTORY = "D:\\java\\Project\\Backend\\src\\Image\\";
 
     public Equipment addEquipment(Equipment equipment, MultipartFile imageFile) throws IOException {
         if (imageFile != null && !imageFile.isEmpty()) {

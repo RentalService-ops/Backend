@@ -1,5 +1,6 @@
 package com.example.RentalService.model;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import jakarta.persistence.Column;
@@ -53,6 +54,9 @@ public class Rental_Bookings {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private BookingStatus status;
+    
+    @Column(name="total_price")
+    private BigDecimal totalPrice;
    
 
 
@@ -168,4 +172,22 @@ public class Rental_Bookings {
     public void setAddress(Address address) {
         this.address = address;
     }
+
+	public int getBooking_id() {
+		return booking_id;
+	}
+
+	public void setBooking_id(int booking_id) {
+		this.booking_id = booking_id;
+	}
+
+	public BigDecimal getTotalPrice() {
+		return totalPrice;
+	}
+
+	public void setTotalPrice(BigDecimal totalPrice) {
+		this.totalPrice = totalPrice;
+	}
+    
+    
 }

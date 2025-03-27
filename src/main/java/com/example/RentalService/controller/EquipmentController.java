@@ -114,7 +114,7 @@ public class EquipmentController {
     @PreAuthorize("hasAnyRole('ROLE_user', 'ROLE_rental')")
     @GetMapping("/{filename}")
     public ResponseEntity<Resource> getImage(@PathVariable String filename) throws MalformedURLException {
-        Path imagePath = Paths.get("C:\\Users\\700048\\Desktop\\Backend\\src\\Image\\" + filename);
+        Path imagePath = Paths.get("D:\\java\\Project\\Backend\\src\\Image\\" + filename);
         Resource resource = new UrlResource(imagePath.toUri());
 
         if (resource.exists()) {

@@ -35,9 +35,7 @@ public class RentalBookingsDTO {
 		this.startDate=booking.getStartDate();
 		this.endDate=booking.getEndDate();
 		this.status=booking.getStatus();
-		Integer equipmentQuantity=booking.getEquipment_quantity();
-		this.setTotalAmount(booking.getEquipment().getPricePerDay().multiply(
-				BigDecimal.valueOf(equipmentQuantity.longValue())));
+		this.setTotalAmount(booking.getTotalPrice());
 	}
 	
 	public int getBookingId() {

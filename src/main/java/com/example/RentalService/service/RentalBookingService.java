@@ -83,8 +83,10 @@ public class RentalBookingService {
         booking.setEquipment(equipment);
         booking.setRenter(user);
         booking.setStatus(booking.getStatus());
-
+        booking.setTotalPrice(booking.getTotalPrice());
+        System.out.println(booking.getTotalPrice());
         Rental_Bookings savedBooking = rentalRepo.save(booking);
+        System.out.println(savedBooking.getTotalPrice());
         RentalBookingsDTO bookingDTO = new RentalBookingsDTO(
             savedBooking
         );
@@ -97,11 +99,13 @@ public class RentalBookingService {
      */
     public ResponseEntity<?> getBookingDetailsByUserId(int id) {
         List<Rental_Bookings> bookings = rentalRepo.findByUser_Id(id);
+        System.out.println(bookings);
         
         if (!bookings.isEmpty()) {
             List<RentalBookingsDTO> bookingDTOs = bookings.stream()
                 .map((booking)->new RentalBookingsDTO(booking))
                 .collect(Collectors.toList());
+            System.out.println(bookingDTOs);
             return ResponseEntity.ok(bookingDTOs);
         }
         

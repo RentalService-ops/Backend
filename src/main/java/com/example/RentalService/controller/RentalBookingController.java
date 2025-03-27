@@ -44,6 +44,7 @@ public class RentalBookingController {
     @PreAuthorize("hasAnyRole('ROLE_user')")
     @GetMapping("/bookingDetails/{userId}")
     public ResponseEntity<?> getBookingDetailsByUserId(@PathVariable int userId) {
+    	System.out.println(userId);
         return service.getBookingDetailsByUserId(userId);
     }
 
