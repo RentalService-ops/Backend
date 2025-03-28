@@ -130,6 +130,7 @@ public class Rental_Bookings {
      * @param equipment: the equipment to be set with this booking.
      * */
     public void setEquipment(Equipment equipment) {
+    	
     	this.equipment=equipment;
     }
     

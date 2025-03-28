@@ -34,7 +34,7 @@ public class RentalBookingController {
     @PreAuthorize("hasAnyRole('ROLE_user')")
     @PostMapping("/equipmentBooking")
     public ResponseEntity<?> bookEquipment(@RequestBody Rental_Bookings booking) {
-        System.out.println(booking.toString());
+
         return service.equipmentBooking(booking);
     }
     
@@ -44,7 +44,6 @@ public class RentalBookingController {
     @PreAuthorize("hasAnyRole('ROLE_user')")
     @GetMapping("/bookingDetails/{userId}")
     public ResponseEntity<?> getBookingDetailsByUserId(@PathVariable int userId) {
-    	System.out.println(userId);
         return service.getBookingDetailsByUserId(userId);
     }
 

@@ -63,11 +63,12 @@ public class AuthService {
 		return repo.findById(id).get();
 	}
 	public ResponseEntity<?> verify(@RequestBody Users user, HttpServletResponse response) {
+		
+		System.out.println(user.getEmail());
 	    Authentication authentication = authManager.authenticate(
 	        new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword()));
 
 	    if (authentication.isAuthenticated()) {
-	        System.out.println("Authenticated");
 
 	        Users userDemo = repo.findByEmail(user.getEmail()).get();
 	        String jwtToken = jwtService.generateToken(String.valueOf(userDemo.getId()), userDemo.getEmail(), userDemo.getRole().toLowerCase());
