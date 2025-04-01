@@ -1,6 +1,7 @@
 package com.example.RentalService.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -8,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.RentalService.DTO.UsersDTO;
 import com.example.RentalService.model.Users;
 import com.example.RentalService.service.AuthService;
 
@@ -36,8 +38,9 @@ public class AuthController {
 	 * Returns the registered user.
 	 * */
 	@PostMapping("/register")
-	public Users register(@RequestBody Users user) {
-		return service.register(user);
+	public ResponseEntity<UsersDTO> register(@RequestBody Users user) {
+		return ResponseEntity.status(HttpStatus.CREATED)
+				.body(new UsersDTO(service.register(user)));
 	}
 	
 	/**

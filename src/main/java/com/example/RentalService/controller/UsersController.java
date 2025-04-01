@@ -44,8 +44,8 @@ public class UsersController {
 	 * */
 	@GetMapping("/getUser")
 	@PreAuthorize("hasRole('rental') or hasRole('admin') or hasRole('user')")
-	public UsersDTO getUserByUserId(@RequestParam("id") int id) {
-		return new UsersDTO(service.getUserByUserId(id));
+	public ResponseEntity<UsersDTO> getUserByUserId(@RequestParam("id") int id) {
+		return ResponseEntity.ok(new UsersDTO(service.getUserByUserId(id)));
 	}
 	
 	/**
@@ -57,12 +57,13 @@ public class UsersController {
 	 * */
 	@PostMapping(value={"/updateUser"})
 	@PreAuthorize("hasRole('rental') or hasRole('admin') or hasRole('user')")
-	public UsersDTO updateUserbyId(@RequestParam("id") int id, @RequestBody UsersDTO userDTO) {
+	public ResponseEntity<UsersDTO> updateUserbyId(@RequestParam("id") int id, @RequestBody UsersDTO userDTO) {
+		System.out.println(userDTO.getPhoneNo());
 		Users user=service.getUserByUserId(id);
 		user.setEmail(userDTO.getEmail());
 		user.setPhoneNumber(userDTO.getPhoneNo());
 		user.setUsername(userDTO.getUsername());
-		return new UsersDTO(service.saveUser(user));
+		return ResponseEntity.status(HttpStatus.OK).body(new UsersDTO(service.saveUser(user)));
 	}
 	
 	

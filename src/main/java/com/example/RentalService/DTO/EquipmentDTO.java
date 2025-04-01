@@ -7,7 +7,7 @@ import com.example.RentalService.model.Equipment;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 
-//DTO for Equipment entity.
+
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class EquipmentDTO {
    

@@ -1,7 +1,5 @@
 package com.example.RentalService.controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.RentalService.DTO.CategoryDTO;
 import com.example.RentalService.model.Category;
 import com.example.RentalService.model.Users;
 import com.example.RentalService.service.AuthService;
@@ -21,7 +20,7 @@ import com.example.RentalService.service.CategoryService;
 
 //Controller for handling Category operations.
 @RestController
-@RequestMapping("/api/rental/")
+@RequestMapping("/api/category/")
 public class CategoryController {
 	
 	
@@ -53,7 +52,7 @@ public class CategoryController {
 	        category.setUser(user);
 	        Category savedCategory = service.addCategory(category);
 	        
-	        return ResponseEntity.status(HttpStatus.CREATED).body(savedCategory);
+	        return ResponseEntity.status(HttpStatus.CREATED).body(new CategoryDTO(savedCategory));
 	    }
 
 	/**
@@ -63,7 +62,6 @@ public class CategoryController {
 	 * */
 	@DeleteMapping("/category/{id}")
 	public ResponseEntity<?> deleteCategoryById(@PathVariable int id){
-		System.out.println("in");
 		return service.deleteCategory(id);
 	}
 	
@@ -71,7 +69,7 @@ public class CategoryController {
 	 * Returns all the categories registered.
 	 * */
 	@GetMapping("/getAllCategory")
-	public ResponseEntity<List<Category>> getAllCategory(){
+	public ResponseEntity<?> getAllCategory(){
 		return new ResponseEntity<>(service.getAllcategory(), HttpStatus.OK);
 	}
 	
@@ -80,7 +78,7 @@ public class CategoryController {
 	 * @Param id: id of the user whose category details are to be fetched.
 	 * */
 	@GetMapping("/category/{id}")
-	public List<Category> getCategoryByUser(@PathVariable int id){
-		return service.getCategoryByUserId(id);
+	public ResponseEntity<?> getCategoryByUser(@PathVariable int id){
+		return ResponseEntity.ok(service.getCategoryByUserId(id));
 	}
 }

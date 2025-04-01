@@ -57,7 +57,7 @@ public class EquipmentController {
             Equipment equipment = objectMapper.readValue(equipmentJson, Equipment.class);
 
             Equipment savedEquipment = equipmentService.addEquipment(equipment, imageFile);
-            return ResponseEntity.status(HttpStatus.CREATED).body(savedEquipment);
+            return ResponseEntity.status(HttpStatus.CREATED).body(new EquipmentDTO(savedEquipment));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
         }
@@ -68,8 +68,8 @@ public class EquipmentController {
      * */
     @GetMapping({"/getAllEquipments"})
 	@PreAuthorize("hasRole('rental') or hasRole('admin') or hasRole('user')")
-    public List<EquipmentDTO> getAllEquipments() {
-       return this.equipmentService.getAllEquipments();
+    public ResponseEntity<List<EquipmentDTO>> getAllEquipments() {
+       return ResponseEntity.ok(equipmentService.getAllEquipments());
     }
     
     /**
@@ -78,8 +78,8 @@ public class EquipmentController {
      * */
     @GetMapping({"/getEquipmentByUserId"})
     @PreAuthorize("hasRole('rental') or hasRole('admin')")
-    public List<EquipmentDTO> getEquipMentByUserId(@RequestParam("id") int id) {
-       return this.equipmentService.getEquipmentsByUserId(id);
+    public ResponseEntity<?> getEquipMentByUserId(@RequestParam("id") int id) {
+		return this.equipmentService.getEquipmentsByUserId(id);
     }
     
     /**
@@ -89,8 +89,11 @@ public class EquipmentController {
      * */
     @PatchMapping({"/editEquipment"})
     @PreAuthorize("hasRole('rental') or hasRole('admin')")
-    public Equipment updateEquipment(@RequestBody EquipmentDTO body) {
-       return this.equipmentService.updateEquipment(body);
+    public ResponseEntity<?> updateEquipment(@RequestBody EquipmentDTO body) {
+    		if(body ==null) {
+    			ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid or missing credentials");
+    		}
+			return ResponseEntity.ok(new EquipmentDTO(equipmentService.updateEquipment(body)));
     }
     
     /**

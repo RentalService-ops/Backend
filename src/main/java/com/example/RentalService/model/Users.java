@@ -12,7 +12,7 @@ public class Users {
 
     // Property to store the unique user ID
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private int id;
 
     // Property to store the username of the user

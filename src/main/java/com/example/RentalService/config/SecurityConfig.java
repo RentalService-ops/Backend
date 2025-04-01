@@ -109,7 +109,7 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable()) // Disable CSRF (only for APIs, enable it if using sessions)
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/login", "/register","/contact").permitAll()
-                .requestMatchers("/api/rental/**").hasAuthority("ROLE_rental")//Category routes: /api/rental
+                .requestMatchers("/api/category/**").hasAuthority("ROLE_rental")//Category routes: /api/rental
                 .anyRequest().authenticated()
             )
             .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class); // Add JWT filter

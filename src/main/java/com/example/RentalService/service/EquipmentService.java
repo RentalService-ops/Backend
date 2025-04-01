@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -62,16 +64,18 @@ public class EquipmentService {
         return equipments;
      }
 
-     public List<EquipmentDTO> getEquipmentsByUserId(int id) {
+     public ResponseEntity<?> getEquipmentsByUserId(int id) {
         List<EquipmentDTO> equipments = new ArrayList<>();
         List<Equipment> equipmentsObtained = this.equipmentRepo.findByUserId(id);
-
-        for(Equipment equipment : equipmentsObtained) {
-           EquipmentDTO equipmentDTO = new EquipmentDTO(equipment);
-           equipments.add(equipmentDTO);
-        }
-
-        return equipments;
+        
+        if(equipmentsObtained!=null) {
+			for(Equipment equipment : equipmentsObtained) {
+			   EquipmentDTO equipmentDTO = new EquipmentDTO(equipment);
+			   equipments.add(equipmentDTO);
+			}
+	        return ResponseEntity.ok(equipments);
+		}
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid or missing credentials provided.");
      }
 
      public Equipment updateEquipment(EquipmentDTO updatedDetails) {

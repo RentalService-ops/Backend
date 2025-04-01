@@ -40,6 +40,7 @@ public class AuthService {
 	
 	public Users register(Users user) {
 		user.setPassword(encoder.encode(user.getPassword()));
+		System.out.println(user.getId());
 		return repo.save(user);
 	}
 	

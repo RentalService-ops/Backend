@@ -1,12 +1,13 @@
 package com.example.RentalService.service;
 
-import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.example.RentalService.DTO.CategoryDTO;
 import com.example.RentalService.model.Category;
 import com.example.RentalService.model.Users;
 import com.example.RentalService.repo.CategoryRepo;
@@ -19,20 +20,7 @@ public class CategoryService {
 	
 	@Autowired
 	private AuthService userService;
-	
-//	public Category addCategory(Category category) {
-//		System.out.println("in");
-////		Users user = userRepositry.findById(category.getUser().getId());
-//		System.out.println(category.toString());
-//
-//		Users user = userService.findUsreById(category.getUser().getId());
-//		System.out.println(user);
-//		if(user != null) {
-//			category.setUser(user);
-//		}
-//		return repo.save(category);
-//	}
-	
+		
 	public Category addCategory(Category category) {
 
 	    if (category.getUser() == null || category.getUser().getId() == 0) {
@@ -54,22 +42,30 @@ public class CategoryService {
 	public ResponseEntity<?> deleteCategory(int id) {
 		
 		Category category = repo.findById(id).get();
-//		System.out.println(category);
 		if(category!=null) {
 			repo.deleteById(id);
-			return new ResponseEntity<>(category,HttpStatus.OK);
+			return new ResponseEntity<>(new CategoryDTO(category),HttpStatus.OK);
 		}
 		
 		return new ResponseEntity<>("Not Found",HttpStatus.NOT_FOUND);
 	}
 	
-	public List<Category> getAllcategory(){
-		return repo.findAll();
+	public ResponseEntity<?> getAllcategory(){
+		return ResponseEntity.ok(
+				repo.findAll()
+				.stream()
+				.map(category->new CategoryDTO(category))
+				.collect(Collectors.toList())
+				);
 	}
 	
-	public List<Category> getCategoryByUserId(int id){
-	    return repo.findByUserId(id);
-
+	public ResponseEntity<?> getCategoryByUserId(int id){
+		return ResponseEntity.ok(
+				repo.findByUserId(id)
+				.stream()
+				.map(category->new CategoryDTO(category))
+				.collect(Collectors.toList())
+				);
 	}
 	
 }
