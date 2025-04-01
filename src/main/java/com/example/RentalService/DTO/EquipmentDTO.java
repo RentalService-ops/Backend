@@ -29,6 +29,9 @@ public class EquipmentDTO {
    //ImageUrl of the Equipment Image
    private String imageUrl;
    
+   //category name of the category the equipment belongs to.
+   private String categoryName;
+   
    //Default Constructor
    public EquipmentDTO() {
    }
@@ -44,6 +47,7 @@ public class EquipmentDTO {
       this.setName(equipment.getName());
       this.setEquipmentId(equipment.getEquipmentId());
       this.setImageUrl(equipment.getImageUrl());
+      this.setCategoryName(equipment.getCategory().getName());
    }
 
    /**
@@ -153,5 +157,13 @@ public class EquipmentDTO {
    public void setImageUrl(String imageUrl) {
       this.imageUrl = imageUrl;
    }
+
+public String getCategoryName() {
+	return categoryName;
+}
+
+public void setCategoryName(String categoryName) {
+	this.categoryName = categoryName;
+}
 
 }
