@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.example.RentalService.service.JWTService;
-import com.example.RentalService.service.MyUserDetailsService;
+import com.example.RentalService.serviceImpl.MyUserDetailsService;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

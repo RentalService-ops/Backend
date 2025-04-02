@@ -1,93 +1,53 @@
 package com.example.RentalService.service;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.RentalService.DTO.EquipmentDTO;
 import com.example.RentalService.model.Equipment;
-import com.example.RentalService.repo.EquipmentRepo;
 
-@Service
-public class EquipmentService {
+public interface EquipmentService {
 
-    @Autowired
-    private EquipmentRepo equipmentRepo;
+    /**
+     * Add a new equipment along with an image.
+     * 
+     * @param equipment the equipment details to be added
+     * @param imageFile the image file associated with the equipment
+     * @return the saved equipment
+     * @throws IOException if an error occurs during the image storage process
+     */
+    Equipment addEquipment(Equipment equipment, MultipartFile imageFile) throws IOException;
 
-    private static final String IMAGE_DIRECTORY = "D:\\java\\Project\\Backend\\src\\Image\\";
+    /**
+     * Get a list of all available equipment.
+     * 
+     * @return list of EquipmentDTO objects representing all the equipment
+     */
+    List<EquipmentDTO> getAllEquipments();
 
-    public Equipment addEquipment(Equipment equipment, MultipartFile imageFile) throws IOException {
-        if (imageFile != null && !imageFile.isEmpty()) {
-            String fileName = storeImage(imageFile);
-            equipment.setImageUrl(fileName);
-        }
+    /**
+     * Get a list of equipment by a user's ID.
+     * 
+     * @param id the user ID to filter the equipment by
+     * @return ResponseEntity containing the list of equipment or an error message
+     */
+    ResponseEntity<?> getEquipmentsByUserId(int id);
 
-        return equipmentRepo.save(equipment);
-    }
+    /**
+     * Update equipment details based on the provided DTO.
+     * 
+     * @param updatedDetails the EquipmentDTO with updated information
+     * @return the updated Equipment object
+     */
+    Equipment updateEquipment(EquipmentDTO updatedDetails);
 
-    private String storeImage(MultipartFile file) throws IOException {
-        // Ensure directory exists
-        File directory = new File(IMAGE_DIRECTORY);
-        if (!directory.exists()) {
-            directory.mkdirs();
-        }
-
-        // Generate a unique filename
-        String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
-        Path filePath = Paths.get(IMAGE_DIRECTORY, fileName);
-
-        // Save file to disk
-        Files.write(filePath, file.getBytes());
-
-        return fileName;
-    }
-    public List<EquipmentDTO> getAllEquipments() {
-        List<EquipmentDTO> equipments = new ArrayList<>();
-        List<Equipment> equipmentsObtained = equipmentRepo.findAll();
-
-        for(Equipment equipment:equipmentsObtained) {
-           EquipmentDTO equipmentDTO = new EquipmentDTO(equipment);
-           equipments.add(equipmentDTO);
-        }
-
-        return equipments;
-     }
-
-     public ResponseEntity<?> getEquipmentsByUserId(int id) {
-        List<EquipmentDTO> equipments = new ArrayList<>();
-        List<Equipment> equipmentsObtained = this.equipmentRepo.findByUserId(id);
-        
-        if(equipmentsObtained!=null) {
-			for(Equipment equipment : equipmentsObtained) {
-			   EquipmentDTO equipmentDTO = new EquipmentDTO(equipment);
-			   equipments.add(equipmentDTO);
-			}
-	        return ResponseEntity.ok(equipments);
-		}
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid or missing credentials provided.");
-     }
-
-     public Equipment updateEquipment(EquipmentDTO updatedDetails) {
-        Equipment equipment = this.equipmentRepo.findByEquipmentId(updatedDetails.getEquipmentId());
-        equipment.setQuantity(updatedDetails.getQuantity());
-        equipment.setPricePerDay(updatedDetails.getPricePerDay());
-        equipment.setDescription(updatedDetails.getDescription());
-        equipment.setName(updatedDetails.getName());
-        return this.equipmentRepo.save(equipment);
-     }
-
-     public void deleteEquipment(int id) {
-        this.equipmentRepo.deleteById(id);
-     }
+    /**
+     * Delete an equipment by its ID.
+     * 
+     * @param id the ID of the equipment to be deleted
+     */
+    void deleteEquipment(int id);
 }

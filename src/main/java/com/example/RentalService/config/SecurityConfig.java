@@ -109,7 +109,6 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable()) // Disable CSRF (only for APIs, enable it if using sessions)
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/login", "/register","/contact").permitAll()
-                .requestMatchers("/api/category/**").hasAuthority("ROLE_rental")//Category routes: /api/rental
                 .anyRequest().authenticated()
             )
             .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class); // Add JWT filter
@@ -133,7 +132,7 @@ public class SecurityConfig {
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setUserDetailsService(userDetailsService);
+        provider.setUserDetailsService(userDetailsService);//setting service for fetching user credentials from database for authentication.
         provider.setPasswordEncoder(new BCryptPasswordEncoder(12));
         return provider;
     }

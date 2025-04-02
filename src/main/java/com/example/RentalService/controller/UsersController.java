@@ -15,6 +15,8 @@ import com.example.RentalService.model.CustomerQuery;
 import com.example.RentalService.model.Users;
 import com.example.RentalService.service.CustomerQueryService;
 import com.example.RentalService.service.UsersService;
+import com.example.RentalService.serviceImpl.CustomerQueryServiceImpl;
+import com.example.RentalService.serviceImpl.UsersServiceImpl;
 
 
 /**
@@ -33,7 +35,7 @@ public class UsersController {
 	/**
 	 * Injecting UserService and CustomerService dependency using Constructor dependency injection.
 	 * */
-	public UsersController(UsersService service,CustomerQueryService customerService) {
+	public UsersController(UsersServiceImpl service,CustomerQueryServiceImpl customerService) {
 		this.service=service;
 		this.customerService=customerService;
 	}

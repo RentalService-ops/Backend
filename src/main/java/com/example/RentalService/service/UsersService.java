@@ -1,27 +1,22 @@
 package com.example.RentalService.service;
 
-import org.springframework.stereotype.Service;
-
 import com.example.RentalService.model.Users;
-import com.example.RentalService.repo.UserRepository;
 
+public interface UsersService {
 
-@Service
-public class UsersService {
-	
-	private UserRepository repo;
-	
-	public UsersService(UserRepository repo){
-		this.repo=repo;
-	}
-	
-	public Users getUserByUserId(int id) {
-		Users user=repo.findById(id).get();
-		return user;
-	}
-	
-	public Users saveUser(Users user) {
-		return repo.save(user);
-	}
-	
+    /**
+     * Retrieves a user by their user ID.
+     * 
+     * @param id the ID of the user to retrieve
+     * @return the user object with the given user ID
+     */
+    Users getUserByUserId(int id);
+
+    /**
+     * Saves a new or existing user to the database.
+     * 
+     * @param user the user object to save
+     * @return the saved user object
+     */
+    Users saveUser(Users user);
 }

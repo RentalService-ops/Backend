@@ -23,7 +23,7 @@ public class Category {
     private Users user;
 
     // Property to store the name of the category
-    @Column(nullable = false, length = 255)
+    @Column(nullable = false, length = 255, unique=true)
     private String name;
 
     // Property to store the description of the category

@@ -3,6 +3,7 @@ package com.example.RentalService.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -38,7 +39,8 @@ public class CategoryController {
 	 * Returns the added category.
 	 * */
 	 @PostMapping("/addCategory")
-	    public ResponseEntity<?> addCategory(@RequestBody Category category) {
+	 @PreAuthorize("hasRole('rental')")
+	 public ResponseEntity<?> addCategory(@RequestBody Category category) {
 
 	        if (category.getUser() == null || category.getUser().getId() <= 0) {
 	            return ResponseEntity.badRequest().body("Valid User ID is required");
@@ -61,6 +63,7 @@ public class CategoryController {
 	 * Returns deleted category.
 	 * */
 	@DeleteMapping("/category/{id}")
+	@PreAuthorize("hasRole('rental')")
 	public ResponseEntity<?> deleteCategoryById(@PathVariable int id){
 		return service.deleteCategory(id);
 	}
@@ -69,6 +72,7 @@ public class CategoryController {
 	 * Returns all the categories registered.
 	 * */
 	@GetMapping("/getAllCategory")
+	@PreAuthorize("hasRole('user') or hasRole('admin') or hasRole('rental')")
 	public ResponseEntity<?> getAllCategory(){
 		return new ResponseEntity<>(service.getAllcategory(), HttpStatus.OK);
 	}
@@ -78,6 +82,7 @@ public class CategoryController {
 	 * @Param id: id of the user whose category details are to be fetched.
 	 * */
 	@GetMapping("/category/{id}")
+	@PreAuthorize("hasRole('rental')")
 	public ResponseEntity<?> getCategoryByUser(@PathVariable int id){
 		return ResponseEntity.ok(service.getCategoryByUserId(id));
 	}

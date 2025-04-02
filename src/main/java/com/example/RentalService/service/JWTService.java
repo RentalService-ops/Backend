@@ -1,88 +1,34 @@
 package com.example.RentalService.service;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Function;
-
-import javax.crypto.SecretKey;
-
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Service;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.io.Decoders;
-import io.jsonwebtoken.security.Keys;
 
-@Service
-public class JWTService {
+public interface JWTService {
 
-	@Value("${jwt.secret}")
-    private String secretkey;
+    /**
+     * Generates a JWT token with the provided user details.
+     *
+     * @param userId The user ID to include in the claims.
+     * @param username The username (subject) to include in the token.
+     * @param role The role of the user to include in the claims.
+     * @return The generated JWT token as a string.
+     */
+    String generateToken(String userId, String username, String role);
 
-    public JWTService() {
+    /**
+     * Extracts the username from the JWT token.
+     *
+     * @param token The JWT token from which the username will be extracted.
+     * @return The username extracted from the token.
+     */
+    String extractUserName(String token);
 
-//        try {
-//            KeyGenerator keyGen = KeyGenerator.getInstance("HmacSHA256");
-//            SecretKey sk = keyGen.generateKey();
-//            secretkey = Base64.getEncoder().encodeToString(sk.getEncoded());
-//        } catch (NoSuchAlgorithmException e) {
-//            throw new RuntimeException(e);
-//        }
-    	System.out.println(secretkey);
-    }
-
-    public String generateToken(String userId, String username, String role) {
-        Map<String, Object> claims = new HashMap<>();
-        claims.put("user_id", userId);  // ✅ Add user_id to claims
-        claims.put("role", role);       // ✅ Keep role as a claim
-
-        return Jwts.builder()
-                .claims(claims)
-                .subject(username)  // Keep only username as subject
-                .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + (1000 * 60 * 60 * 30))) // 30 hours
-                
-                .signWith(getKey())
-                .compact();
-    }
-
-    private SecretKey getKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(secretkey);
-        return Keys.hmacShaKeyFor(keyBytes);
-    }
-
-    public String extractUserName(String token) {
-        // extract the username from jwt token
-        return extractClaim(token, Claims::getSubject);
-    }
-
-    private <T> T extractClaim(String token, Function<Claims, T> claimResolver) {
-        final Claims claims = extractAllClaims(token);
-        return claimResolver.apply(claims);
-    }
-
-    private Claims extractAllClaims(String token) {
-        return Jwts.parser()
-                .verifyWith(getKey())
-                .build()
-                .parseSignedClaims(token)
-                .getPayload();
-    }
-
-    public boolean validateToken(String token, UserDetails userDetails) {
-        final String userName = extractUserName(token);
-        return (userName.equals(userDetails.getUsername()) && !isTokenExpired(token));
-    }
-
-    private boolean isTokenExpired(String token) {
-        return extractExpiration(token).before(new Date());
-    }
-
-    private Date extractExpiration(String token) {
-        return extractClaim(token, Claims::getExpiration);
-    }
-
+    /**
+     * Validates the JWT token against the provided user details.
+     *
+     * @param token The JWT token to be validated.
+     * @param userDetails The user details to check the validity of the token.
+     * @return True if the token is valid, otherwise false.
+     */
+    boolean validateToken(String token, UserDetails userDetails);
 }
