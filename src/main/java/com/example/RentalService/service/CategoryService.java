@@ -2,6 +2,7 @@ package com.example.RentalService.service;
 
 import org.springframework.http.ResponseEntity;
 
+import com.example.RentalService.DTO.CategoryDTO;
 import com.example.RentalService.model.Category;
 
 public interface CategoryService {
@@ -21,6 +22,14 @@ public interface CategoryService {
      * @return A ResponseEntity containing a CategoryDTO if successful, or an error message.
      */
     ResponseEntity<?> deleteCategory(int id);
+    
+    /**
+     * updates category based on provided details.
+     * @param id id of the category to be updated.
+     * @param body updated details of the category provided
+     * @return Category object with updated details.
+     * */
+    Category updateCategoryById(int id, CategoryDTO body);
 
     /**
      * Retrieves all categories from the system.

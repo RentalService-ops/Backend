@@ -22,6 +22,7 @@ public class CategoryServiceImpl implements CategoryService{
 	@Autowired
 	private AuthServiceImpl userService;
 		
+	@Override
 	public Category addCategory(Category category) {
 
 	    if (category.getUser() == null || category.getUser().getId() == 0) {
@@ -40,6 +41,7 @@ public class CategoryServiceImpl implements CategoryService{
 	}
 
 	
+	@Override
 	public ResponseEntity<?> deleteCategory(int id) {
 		
 		Category category = repo.findById(id).get();
@@ -51,6 +53,7 @@ public class CategoryServiceImpl implements CategoryService{
 		return new ResponseEntity<>("Not Found",HttpStatus.NOT_FOUND);
 	}
 	
+	@Override
 	public ResponseEntity<?> getAllcategory(){
 		return ResponseEntity.ok(
 				repo.findAll()
@@ -60,6 +63,7 @@ public class CategoryServiceImpl implements CategoryService{
 				);
 	}
 	
+	@Override
 	public ResponseEntity<?> getCategoryByUserId(int id){
 		return ResponseEntity.ok(
 				repo.findByUserId(id)
@@ -67,6 +71,16 @@ public class CategoryServiceImpl implements CategoryService{
 				.map(category->new CategoryDTO(category))
 				.collect(Collectors.toList())
 				);
+	}
+
+
+	@Override
+	public Category updateCategoryById(int id, CategoryDTO body) {
+		Category category=repo.findById(id).get();
+		category.setName(body.getName());
+		category.setDescription(body.getDescription());
+		
+		return repo.save(category);
 	}
 	
 }

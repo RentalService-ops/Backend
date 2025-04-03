@@ -108,7 +108,7 @@ public class SecurityConfig {
             .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Enable CORS
             .csrf(csrf -> csrf.disable()) // Disable CSRF (only for APIs, enable it if using sessions)
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/login", "/register","/contact").permitAll()
+                .requestMatchers("/login", "/register","/api/user/contact").permitAll()
                 .anyRequest().authenticated()
             )
             .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class); // Add JWT filter

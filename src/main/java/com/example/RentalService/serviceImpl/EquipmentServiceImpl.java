@@ -26,9 +26,10 @@ public class EquipmentServiceImpl implements EquipmentService{
     @Autowired
     private EquipmentRepo equipmentRepo;
 
-    private static final String IMAGE_DIRECTORY = "D:\\java\\Project\\Backend\\src\\Image\\";
+    private static final String IMAGE_DIRECTORY = "C:\\Users\\700048\\Desktop\\Backend\\src\\Image";
 
-    public Equipment addEquipment(Equipment equipment, MultipartFile imageFile) throws IOException {
+    @Override
+	public Equipment addEquipment(Equipment equipment, MultipartFile imageFile) throws IOException {
         if (imageFile != null && !imageFile.isEmpty()) {
             String fileName = storeImage(imageFile);
             equipment.setImageUrl(fileName);
@@ -53,7 +54,8 @@ public class EquipmentServiceImpl implements EquipmentService{
 
         return fileName;
     }
-    public List<EquipmentDTO> getAllEquipments() {
+    @Override
+	public List<EquipmentDTO> getAllEquipments() {
         List<EquipmentDTO> equipments = new ArrayList<>();
         List<Equipment> equipmentsObtained = equipmentRepo.findAll();
 
@@ -65,7 +67,8 @@ public class EquipmentServiceImpl implements EquipmentService{
         return equipments;
      }
 
-     public ResponseEntity<?> getEquipmentsByUserId(int id) {
+     @Override
+	public ResponseEntity<?> getEquipmentsByUserId(int id) {
         List<EquipmentDTO> equipments = new ArrayList<>();
         List<Equipment> equipmentsObtained = this.equipmentRepo.findByUserId(id);
         
@@ -79,16 +82,23 @@ public class EquipmentServiceImpl implements EquipmentService{
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid or missing credentials provided.");
      }
 
-     public Equipment updateEquipment(EquipmentDTO updatedDetails) {
+     @Override
+	public Equipment updateEquipment(EquipmentDTO updatedDetails, MultipartFile imageFile) throws IOException {
         Equipment equipment = this.equipmentRepo.findByEquipmentId(updatedDetails.getEquipmentId());
         equipment.setQuantity(updatedDetails.getQuantity());
         equipment.setPricePerDay(updatedDetails.getPricePerDay());
         equipment.setDescription(updatedDetails.getDescription());
         equipment.setName(updatedDetails.getName());
+        
+        if (imageFile != null && !imageFile.isEmpty()) {
+            String fileName = storeImage(imageFile);
+            equipment.setImageUrl(fileName);
+        }
         return this.equipmentRepo.save(equipment);
      }
 
-     public void deleteEquipment(int id) {
+     @Override
+	public void deleteEquipment(int id) {
         this.equipmentRepo.deleteById(id);
      }
 }

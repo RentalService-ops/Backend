@@ -37,12 +37,13 @@ public interface EquipmentService {
     ResponseEntity<?> getEquipmentsByUserId(int id);
 
     /**
-     * Update equipment details based on the provided DTO.
+     * Update equipment details based on the provided DTO and image.
      * 
      * @param updatedDetails the EquipmentDTO with updated information
+     * @param imageFile the new image of the equipment uploaded.
      * @return the updated Equipment object
      */
-    Equipment updateEquipment(EquipmentDTO updatedDetails);
+    Equipment updateEquipment(EquipmentDTO updatedDetails, MultipartFile imageFile) throws IOException;
 
     /**
      * Delete an equipment by its ID.

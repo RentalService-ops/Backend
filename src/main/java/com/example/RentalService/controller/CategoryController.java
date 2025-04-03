@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -35,7 +36,7 @@ public class CategoryController {
 	
 	/**
 	 * Adds a new Category to the database
-	 * @Param category: Category to be added.
+	 * @param category: Category to be added.
 	 * Returns the added category.
 	 * */
 	 @PostMapping("/addCategory")
@@ -59,13 +60,26 @@ public class CategoryController {
 
 	/**
 	 * Deletes the category with corresponding id.
-	 * @Param id: The id of the category to be deleted.
+	 * @param id: The id of the category to be deleted.
 	 * Returns deleted category.
 	 * */
 	@DeleteMapping("/category/{id}")
 	@PreAuthorize("hasRole('rental')")
 	public ResponseEntity<?> deleteCategoryById(@PathVariable int id){
 		return service.deleteCategory(id);
+	}
+	
+	
+    /**
+     * updates category based on provided details.
+     * @param id id of the category to be updated.
+     * @param body updated details of the category provided
+     * @return ResponseEntity object with updated category details.
+     * */
+	@PutMapping("/category/{id}")
+	@PreAuthorize("hasRole('rental')")
+	public ResponseEntity<?> updateCategoryById(@PathVariable int id,@RequestBody CategoryDTO body){
+		return ResponseEntity.status(HttpStatus.OK).body(new CategoryDTO(service.updateCategoryById(id,body)));
 	}
 	
 	/**
@@ -79,11 +93,11 @@ public class CategoryController {
 	
 	/**
 	 * Returns categories corresponding to specific user id.
-	 * @Param id: id of the user whose category details are to be fetched.
+	 * @param id: id of the user whose category details are to be fetched.
 	 * */
-	@GetMapping("/category/{id}")
+	@GetMapping("/category/{userId}")
 	@PreAuthorize("hasRole('rental')")
-	public ResponseEntity<?> getCategoryByUser(@PathVariable int id){
-		return ResponseEntity.ok(service.getCategoryByUserId(id));
+	public ResponseEntity<?> getCategoryByUser(@PathVariable int userId){
+		return ResponseEntity.ok(service.getCategoryByUserId(userId));
 	}
 }
