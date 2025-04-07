@@ -46,7 +46,11 @@ public class CategoryServiceImpl implements CategoryService{
 		
 		Category category = repo.findById(id).get();
 		if(category!=null) {
-			repo.deleteById(id);
+			try {
+				repo.deleteById(id);
+			} catch (Exception e) {
+				return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			}
 			return new ResponseEntity<>(new CategoryDTO(category),HttpStatus.OK);
 		}
 		

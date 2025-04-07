@@ -26,7 +26,7 @@ public class EquipmentServiceImpl implements EquipmentService{
     @Autowired
     private EquipmentRepo equipmentRepo;
 
-    private static final String IMAGE_DIRECTORY = "C:\\Users\\700048\\Desktop\\Backend\\src\\Image";
+    private static final String IMAGE_DIRECTORY = "D:\\java\\Project\\Backend\\src\\Image";
 
     @Override
 	public Equipment addEquipment(Equipment equipment, MultipartFile imageFile) throws IOException {
@@ -99,6 +99,11 @@ public class EquipmentServiceImpl implements EquipmentService{
 
      @Override
 	public void deleteEquipment(int id) {
-        this.equipmentRepo.deleteById(id);
+        try {
+        	this.equipmentRepo.deleteById(id);
+		} catch (Exception e) {
+			// TODO: handle exception
+			
+		}
      }
 }

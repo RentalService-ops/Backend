@@ -89,7 +89,7 @@ public class EquipmentController {
     @PatchMapping({"/editEquipment"})
     @PreAuthorize("hasRole('rental') or hasRole('admin')")
     public ResponseEntity<?> updateEquipment(@RequestPart("equipmentDTO") String equipmentDTOJson,
-    										 @RequestPart("imageFile") MultipartFile imageFile) {    	
+    										 @RequestPart(value = "imageFile", required = false) MultipartFile imageFile) {    	
     	 try {
              // Convert JSON string to Equipment object
              ObjectMapper objectMapper = new ObjectMapper();
@@ -126,12 +126,40 @@ public class EquipmentController {
         Path imagePath = Paths.get("D:\\java\\Project\\Backend\\src\\Image\\" + filename);
         Resource resource = new UrlResource(imagePath.toUri());
 
-        if (resource.exists()) {
-            return ResponseEntity.ok()
-                    .contentType(MediaType.IMAGE_JPEG) // Change if using PNG, etc.
-                    .body(resource);
-        } else {
+        if (!resource.exists()) {
             return ResponseEntity.notFound().build();
         }
+
+        // Get file extension
+        String fileExtension = filename.substring(filename.lastIndexOf('.') + 1).toLowerCase();
+        
+        // Determine media type based on extension
+        MediaType mediaType;
+        switch (fileExtension) {
+            case "png":
+                mediaType = MediaType.IMAGE_PNG;
+                break;
+            case "gif":
+                mediaType = MediaType.IMAGE_GIF;
+                break;
+            case "bmp":
+                mediaType = MediaType.parseMediaType("image/bmp");
+                break;
+            case "webp":
+                mediaType = MediaType.parseMediaType("image/webp");
+                break;
+            case "jpg":
+            case "jpeg":
+                mediaType = MediaType.IMAGE_JPEG;
+                break;
+            default:
+                mediaType = MediaType.APPLICATION_OCTET_STREAM; // Fallback for unknown types
+        }
+
+        return ResponseEntity.ok()
+                .contentType(mediaType)
+                .body(resource);
     }
+
+    
 }
