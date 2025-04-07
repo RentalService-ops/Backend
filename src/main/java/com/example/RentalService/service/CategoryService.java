@@ -1,5 +1,6 @@
 package com.example.RentalService.service;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 
 import com.example.RentalService.DTO.CategoryDTO;
@@ -19,17 +20,19 @@ public interface CategoryService {
      * Deletes a category by its ID.
      * 
      * @param id The ID of the category to be deleted.
+     * @throws DataIntegrityViolationException, IllegalArgumentException
      * @return A ResponseEntity containing a CategoryDTO if successful, or an error message.
      */
-    ResponseEntity<?> deleteCategory(int id);
+    ResponseEntity<?> deleteCategory(int id) throws DataIntegrityViolationException,IllegalArgumentException;
     
     /**
      * updates category based on provided details.
+     * @throws IllegalArgumentException
      * @param id id of the category to be updated.
      * @param body updated details of the category provided
      * @return Category object with updated details.
      * */
-    Category updateCategoryById(int id, CategoryDTO body);
+    Category updateCategoryById(int id, CategoryDTO body) throws IllegalArgumentException;
 
     /**
      * Retrieves all categories from the system.

@@ -1,8 +1,10 @@
 package com.example.RentalService.serviceImpl;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -42,15 +44,20 @@ public class CategoryServiceImpl implements CategoryService{
 
 	
 	@Override
-	public ResponseEntity<?> deleteCategory(int id) {
+	public ResponseEntity<?> deleteCategory(int id) throws DataIntegrityViolationException,IllegalArgumentException{
 		
 		Category category = repo.findById(id).get();
 		if(category!=null) {
-			repo.deleteById(id);
+			try {
+				repo.deleteById(id);
+			}
+			catch(Exception e) {
+				throw new DataIntegrityViolationException(e.getMessage());
+			}
 			return new ResponseEntity<>(new CategoryDTO(category),HttpStatus.OK);
 		}
 		
-		return new ResponseEntity<>("Not Found",HttpStatus.NOT_FOUND);
+		throw new IllegalArgumentException("Entity not found with specified details(ID).Either ID is not an integer or the user with specified ID does not exist.");
 	}
 	
 	@Override
@@ -65,22 +72,31 @@ public class CategoryServiceImpl implements CategoryService{
 	
 	@Override
 	public ResponseEntity<?> getCategoryByUserId(int id){
-		return ResponseEntity.ok(
-				repo.findByUserId(id)
-				.stream()
-				.map(category->new CategoryDTO(category))
-				.collect(Collectors.toList())
-				);
+		List<Category> categories=repo.findByUserId(id).get();
+		
+		if(categories != null) {
+			return ResponseEntity.ok(
+					categories
+					.stream()
+					.map(category->new CategoryDTO(category))
+					.collect(Collectors.toList())
+					);
+		}
+		return null;
 	}
 
 
 	@Override
-	public Category updateCategoryById(int id, CategoryDTO body) {
+	public Category updateCategoryById(int id, CategoryDTO body) throws IllegalArgumentException{
 		Category category=repo.findById(id).get();
+		
+		if(category != null) {
 		category.setName(body.getName());
 		category.setDescription(body.getDescription());
-		
 		return repo.save(category);
+		}
+		
+		throw new IllegalArgumentException("Entity not found with specified details.Either ID is not an Integer or the user with specified ID does not exist.");
 	}
 	
 }
