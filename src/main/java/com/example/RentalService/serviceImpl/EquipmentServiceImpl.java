@@ -9,15 +9,18 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.RentalService.DTO.EquipmentDTO;
 import com.example.RentalService.Exceptions.ImageUnsupportedException;
+import com.example.RentalService.Exceptions.UserNotFoundException;
 import com.example.RentalService.model.Equipment;
+import com.example.RentalService.model.Users;
 import com.example.RentalService.repo.EquipmentRepo;
+import com.example.RentalService.service.AuthService;
 import com.example.RentalService.service.EquipmentService;
 
 @Service
@@ -25,12 +28,29 @@ public class EquipmentServiceImpl implements EquipmentService{
 
     @Autowired
     private EquipmentRepo equipmentRepo;
+    
+    @Autowired
+    private AuthService userService;
 
     private static final String IMAGE_DIRECTORY = "C:\\Users\\700048\\Desktop\\Backend\\src\\Image";
 
     @Override
-	public Equipment addEquipment(Equipment equipment, MultipartFile imageFile) throws ImageUnsupportedException{
-        if (imageFile != null && !imageFile.isEmpty()) {
+	public Equipment addEquipment(Equipment equipment, MultipartFile imageFile) throws ImageUnsupportedException,MaxUploadSizeExceededException,UserNotFoundException{
+        
+	    if (equipment.getUser() == null || equipment.getUser().getId() == 0) {
+	        throw new IllegalArgumentException("User ID is required but was null or 0.");
+	    }
+
+	    // Fetch the user from DB
+	    Users user = userService.findUsreById(equipment.getUser().getId());
+
+	    if (user == null) {
+	        throw new UserNotFoundException("User with ID " + equipment.getUser().getId() + " not found.");
+	    }
+
+	    equipment.setUser(user); // Assign the fetched user
+    	
+    	if (imageFile != null && !imageFile.isEmpty()) {
             String fileName = storeImage(imageFile);
             equipment.setImageUrl(fileName);
         }
@@ -78,7 +98,7 @@ public class EquipmentServiceImpl implements EquipmentService{
      }
 
      @Override
-	public ResponseEntity<?> getEquipmentsByUserId(int id) {
+	public ResponseEntity<?> getEquipmentsByUserId(int id) throws IllegalArgumentException{
         List<EquipmentDTO> equipments = new ArrayList<>();
         List<Equipment> equipmentsObtained = this.equipmentRepo.findByUserId(id);
         
@@ -89,11 +109,11 @@ public class EquipmentServiceImpl implements EquipmentService{
 			}
 	        return ResponseEntity.ok(equipments);
 		}
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid or missing credentials provided.");
+        throw new IllegalArgumentException("Credentials provided are not valid or missing.");
      }
 
      @Override
-	 public Equipment updateEquipment(EquipmentDTO updatedDetails, MultipartFile imageFile) throws ImageUnsupportedException,IllegalArgumentException {
+	 public Equipment updateEquipment(EquipmentDTO updatedDetails, MultipartFile imageFile) throws ImageUnsupportedException,MaxUploadSizeExceededException,IllegalArgumentException {
     	
         Equipment equipment = this.equipmentRepo.findByEquipmentId(updatedDetails.getEquipmentId());
         if(equipment != null) {

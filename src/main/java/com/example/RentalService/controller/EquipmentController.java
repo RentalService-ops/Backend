@@ -26,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.example.RentalService.DTO.EquipmentDTO;
 import com.example.RentalService.Exceptions.ImageUnsupportedException;
+import com.example.RentalService.Exceptions.UserNotFoundException;
 import com.example.RentalService.model.Equipment;
 import com.example.RentalService.service.EquipmentService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -44,7 +45,10 @@ public class EquipmentController {
 
     /**
      * Adds the specified equipment to database.
-     * @throws JsonProcessingException,ImageUnsupportedException 
+     * @throws JsonProcessingException if JSON content is not parsed
+     * @throws ImageUnsupportedException if IO operation is not successfull while storing image.
+     * @throws MaxUploadFileSizeException if image file is too large to store 
+     * @throws UserNotFoundException if user with specified user details is not found.
      * @Param equipmentJson: Equipments details of the equipment
      * @Param imageFile: Image of the Equipment
      * returns Equipment details after equipment is stored in database successfully 
@@ -84,7 +88,9 @@ public class EquipmentController {
     
     /**
      * Updates equipment with given updated equipment details.
-     * @throws JsonProcessingException,ImageUnsupportedException 
+     * @throws JsonProcessingException if JSON content is not parsed
+     * @throws ImageUnsupportedException if IO operation is not successfull while storing image.
+     * @throws MaxUploadFileSizeException if image file is too large to store  
      * @Param body: The updated details of the equipment provided.
      * Returns the equipment object with updated details.
      * */

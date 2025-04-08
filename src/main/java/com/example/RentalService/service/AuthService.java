@@ -29,10 +29,11 @@ public interface AuthService {
     /**
      * Finds a user by their unique ID.
      *
+     * @throws IllegalArgumentException if the user is not found with specified id or id is null. 
      * @param id The ID of the user to be retrieved.
      * @return The user object corresponding to the provided ID.
      */
-    Users findUsreById(int id);
+    Users findUsreById(int id) throws IllegalArgumentException;
 
     /**
      * Verifies the login credentials of a user and generates a JWT token if successful.

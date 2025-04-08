@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import com.example.RentalService.Exceptions.ImageUnsupportedException;
+import com.example.RentalService.Exceptions.UserNotFoundException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import jakarta.servlet.http.HttpServletResponse;
@@ -47,5 +48,11 @@ public class CustomExceptionHandler {
 	public ResponseEntity<?> handleEntityNotFoundException(IllegalArgumentException exception){
 		log.error(exception.getMessage());
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
+	}
+	
+	@ExceptionHandler(UserNotFoundException.class)
+	public ResponseEntity<?> handleUserNotFoundException(UserNotFoundException exception){
+		log.error(exception.getMessage());
+		return ResponseEntity.status(404).body(exception.getMessage());
 	}
 }

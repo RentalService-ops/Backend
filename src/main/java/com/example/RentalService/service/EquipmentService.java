@@ -3,10 +3,12 @@ package com.example.RentalService.service;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.RentalService.DTO.EquipmentDTO;
 import com.example.RentalService.Exceptions.ImageUnsupportedException;
+import com.example.RentalService.Exceptions.UserNotFoundException;
 import com.example.RentalService.model.Equipment;
 
 public interface EquipmentService {
@@ -17,9 +19,11 @@ public interface EquipmentService {
      * @param equipment the equipment details to be added
      * @param imageFile the image file associated with the equipment
      * @return the saved equipment
-     * @throws ImageUnsupportedException
+     * @throws ImageUnsupportedException if IO operation is not successfull while storing image.
+     * @throws MaxUploadFileSizeException if image file is too large to store
+     * @throws UserNotFoundException if user does not exist with specified id. 
      */
-    Equipment addEquipment(Equipment equipment, MultipartFile imageFile) throws ImageUnsupportedException;
+    Equipment addEquipment(Equipment equipment, MultipartFile imageFile) throws ImageUnsupportedException,MaxUploadSizeExceededException,UserNotFoundException;
 
     /**
      * Get a list of all available equipment.
@@ -32,6 +36,7 @@ public interface EquipmentService {
      * Get a list of equipment by a user's ID.
      * 
      * @param id the user ID to filter the equipment by
+     * @throws IllegalArgumentException in case id is null.
      * @return ResponseEntity containing the list of equipment or an error message
      */
     ResponseEntity<?> getEquipmentsByUserId(int id);
@@ -42,15 +47,17 @@ public interface EquipmentService {
      * @param updatedDetails the EquipmentDTO with updated information
      * @param imageFile the new image of the equipment uploaded.
      * @return the updated Equipment object
-     * @throws ImageUnsupportedException,IllegalArgumentException
+     * @throws ImageUnsupportedException if IO operation is not successfull while storing image.
+     * @throws MaxUploadFileSizeException if image file is too large to store 
+     * @throws IllegalArgumentException if id specified in updated equipment details is null.
      */
-    Equipment updateEquipment(EquipmentDTO updatedDetails, MultipartFile imageFile) throws ImageUnsupportedException,IllegalArgumentException;
+    Equipment updateEquipment(EquipmentDTO updatedDetails, MultipartFile imageFile) throws ImageUnsupportedException,MaxUploadSizeExceededException,IllegalArgumentException;
 
     /**
      * Delete an equipment by its ID.
      * 
      * @param id the ID of the equipment to be deleted
-     * @throws IllegalArgumentException
+     * @throws IllegalArgumentException if id is null.
      */
     void deleteEquipment(int id) throws IllegalArgumentException;
 }
