@@ -1,7 +1,6 @@
 package com.example.RentalService.serviceImpl;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -16,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.RentalService.DTO.EquipmentDTO;
+import com.example.RentalService.Exceptions.ImageUnsupportedException;
 import com.example.RentalService.model.Equipment;
 import com.example.RentalService.repo.EquipmentRepo;
 import com.example.RentalService.service.EquipmentService;
@@ -29,7 +29,7 @@ public class EquipmentServiceImpl implements EquipmentService{
     private static final String IMAGE_DIRECTORY = "D:\\java\\Project\\Backend\\src\\Image";
 
     @Override
-	public Equipment addEquipment(Equipment equipment, MultipartFile imageFile) throws IOException {
+	public Equipment addEquipment(Equipment equipment, MultipartFile imageFile) throws ImageUnsupportedException{
         if (imageFile != null && !imageFile.isEmpty()) {
             String fileName = storeImage(imageFile);
             equipment.setImageUrl(fileName);
@@ -38,7 +38,7 @@ public class EquipmentServiceImpl implements EquipmentService{
         return equipmentRepo.save(equipment);
     }
 
-    private String storeImage(MultipartFile file) throws IOException {
+    private String storeImage(MultipartFile file) throws ImageUnsupportedException{
         // Ensure directory exists
         File directory = new File(IMAGE_DIRECTORY);
         if (!directory.exists()) {
@@ -50,10 +50,20 @@ public class EquipmentServiceImpl implements EquipmentService{
         Path filePath = Paths.get(IMAGE_DIRECTORY, fileName);
 
         // Save file to disk
-        Files.write(filePath, file.getBytes());
-
-        return fileName;
+        Path path=null;
+        
+        try {
+        	path=Files.write(filePath, file.getBytes());
+        }
+        catch(Exception e) {}
+        
+        if(path !=null) {
+            return fileName;
+        }
+        
+        throw new ImageUnsupportedException();
     }
+    
     @Override
 	public List<EquipmentDTO> getAllEquipments() {
         List<EquipmentDTO> equipments = new ArrayList<>();
@@ -83,9 +93,11 @@ public class EquipmentServiceImpl implements EquipmentService{
      }
 
      @Override
-	public Equipment updateEquipment(EquipmentDTO updatedDetails, MultipartFile imageFile) throws IOException {
+	 public Equipment updateEquipment(EquipmentDTO updatedDetails, MultipartFile imageFile) throws ImageUnsupportedException,IllegalArgumentException {
+    	
         Equipment equipment = this.equipmentRepo.findByEquipmentId(updatedDetails.getEquipmentId());
-        equipment.setQuantity(updatedDetails.getQuantity());
+        if(equipment != null) {
+		equipment.setQuantity(updatedDetails.getQuantity());
         equipment.setPricePerDay(updatedDetails.getPricePerDay());
         equipment.setDescription(updatedDetails.getDescription());
         equipment.setName(updatedDetails.getName());
@@ -95,15 +107,13 @@ public class EquipmentServiceImpl implements EquipmentService{
             equipment.setImageUrl(fileName);
         }
         return this.equipmentRepo.save(equipment);
+        }
+        
+        throw new IllegalArgumentException("Specified equipment ID is not valid.");
      }
 
      @Override
-	public void deleteEquipment(int id) {
-        try {
-        	this.equipmentRepo.deleteById(id);
-		} catch (Exception e) {
-			// TODO: handle exception
-			
-		}
+	 public void deleteEquipment(int id) throws IllegalArgumentException{
+        this.equipmentRepo.deleteById(id);
      }
 }

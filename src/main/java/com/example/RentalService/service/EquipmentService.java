@@ -1,12 +1,12 @@
 package com.example.RentalService.service;
 
-import java.io.IOException;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.RentalService.DTO.EquipmentDTO;
+import com.example.RentalService.Exceptions.ImageUnsupportedException;
 import com.example.RentalService.model.Equipment;
 
 public interface EquipmentService {
@@ -17,9 +17,9 @@ public interface EquipmentService {
      * @param equipment the equipment details to be added
      * @param imageFile the image file associated with the equipment
      * @return the saved equipment
-     * @throws IOException if an error occurs during the image storage process
+     * @throws ImageUnsupportedException
      */
-    Equipment addEquipment(Equipment equipment, MultipartFile imageFile) throws IOException;
+    Equipment addEquipment(Equipment equipment, MultipartFile imageFile) throws ImageUnsupportedException;
 
     /**
      * Get a list of all available equipment.
@@ -42,13 +42,15 @@ public interface EquipmentService {
      * @param updatedDetails the EquipmentDTO with updated information
      * @param imageFile the new image of the equipment uploaded.
      * @return the updated Equipment object
+     * @throws ImageUnsupportedException,IllegalArgumentException
      */
-    Equipment updateEquipment(EquipmentDTO updatedDetails, MultipartFile imageFile) throws IOException;
+    Equipment updateEquipment(EquipmentDTO updatedDetails, MultipartFile imageFile) throws ImageUnsupportedException,IllegalArgumentException;
 
     /**
      * Delete an equipment by its ID.
      * 
      * @param id the ID of the equipment to be deleted
+     * @throws IllegalArgumentException
      */
-    void deleteEquipment(int id);
+    void deleteEquipment(int id) throws IllegalArgumentException;
 }

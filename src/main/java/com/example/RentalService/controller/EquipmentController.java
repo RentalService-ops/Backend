@@ -21,11 +21,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.RentalService.DTO.EquipmentDTO;
+import com.example.RentalService.Exceptions.ImageUnsupportedException;
 import com.example.RentalService.model.Equipment;
 import com.example.RentalService.service.EquipmentService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
@@ -41,6 +44,7 @@ public class EquipmentController {
 
     /**
      * Adds the specified equipment to database.
+     * @throws JsonProcessingException,ImageUnsupportedException 
      * @Param equipmentJson: Equipments details of the equipment
      * @Param imageFile: Image of the Equipment
      * returns Equipment details after equipment is stored in database successfully 
@@ -49,17 +53,14 @@ public class EquipmentController {
     @PostMapping("/addEquipment")
     @PreAuthorize("hasRole('rental') or hasRole('admin')")
     public ResponseEntity<?> addEquipment(@RequestPart("equipment") String equipmentJson,
-                                          @RequestPart("imageFile") MultipartFile imageFile) {
-        try {
+                                          @RequestPart("imageFile") MultipartFile imageFile) throws JsonProcessingException,ImageUnsupportedException,MaxUploadSizeExceededException{
             // Convert JSON string to Equipment object
             ObjectMapper objectMapper = new ObjectMapper();
             Equipment equipment = objectMapper.readValue(equipmentJson, Equipment.class);
 
             Equipment savedEquipment = equipmentService.addEquipment(equipment, imageFile);
             return ResponseEntity.status(HttpStatus.CREATED).body(new EquipmentDTO(savedEquipment));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
-        }
+        
     }
     
     /**
@@ -83,23 +84,20 @@ public class EquipmentController {
     
     /**
      * Updates equipment with given updated equipment details.
+     * @throws JsonProcessingException,ImageUnsupportedException 
      * @Param body: The updated details of the equipment provided.
      * Returns the equipment object with updated details.
      * */
     @PatchMapping({"/editEquipment"})
     @PreAuthorize("hasRole('rental') or hasRole('admin')")
     public ResponseEntity<?> updateEquipment(@RequestPart("equipmentDTO") String equipmentDTOJson,
-    										 @RequestPart(value = "imageFile", required = false) MultipartFile imageFile) {    	
-    	 try {
+    										 @RequestPart(value="imageFile",required=false) MultipartFile imageFile) throws JsonProcessingException,ImageUnsupportedException,MaxUploadSizeExceededException{    	
              // Convert JSON string to Equipment object
              ObjectMapper objectMapper = new ObjectMapper();
              EquipmentDTO equipmentDTO = objectMapper.readValue(equipmentDTOJson, EquipmentDTO.class);
 
              Equipment savedEquipment = equipmentService.updateEquipment(equipmentDTO, imageFile);
              return ResponseEntity.status(HttpStatus.CREATED).body(new EquipmentDTO(savedEquipment));
-         } catch (Exception e) {
-             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
-         }
     }
     
     /**
@@ -123,7 +121,7 @@ public class EquipmentController {
     @PreAuthorize("hasAnyRole('ROLE_user', 'ROLE_rental')")
     @GetMapping("/{filename}")
     public ResponseEntity<Resource> getImage(@PathVariable String filename) throws MalformedURLException {
-        Path imagePath = Paths.get("D:\\java\\Project\\Backend\\src\\Image\\" + filename);
+        Path imagePath = Paths.get("C:\\Users\\700048\\Desktop\\Backend\\src\\Image\\" + filename);
         Resource resource = new UrlResource(imagePath.toUri());
 
         if (!resource.exists()) {

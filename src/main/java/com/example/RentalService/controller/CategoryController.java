@@ -1,6 +1,7 @@
 package com.example.RentalService.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -65,7 +66,7 @@ public class CategoryController {
 	 * */
 	@DeleteMapping("/category/{id}")
 	@PreAuthorize("hasRole('rental')")
-	public ResponseEntity<?> deleteCategoryById(@PathVariable int id){
+	public ResponseEntity<?> deleteCategoryById(@PathVariable int id) throws DataIntegrityViolationException{
 		return service.deleteCategory(id);
 	}
 	
