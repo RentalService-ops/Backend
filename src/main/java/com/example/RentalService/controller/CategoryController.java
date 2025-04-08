@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.RentalService.DTO.CategoryDTO;
+import com.example.RentalService.Exceptions.UserNotFoundException;
 import com.example.RentalService.model.Category;
 import com.example.RentalService.model.Users;
 import com.example.RentalService.service.AuthService;
@@ -38,11 +39,13 @@ public class CategoryController {
 	/**
 	 * Adds a new Category to the database
 	 * @param category: Category to be added.
+     * @throws IllegalArgumentException if the user id specified in catgory details is null,
+     * @throws UserNotFoundException if user with specified id is not found.
 	 * Returns the added category.
 	 * */
 	 @PostMapping("/addCategory")
 	 @PreAuthorize("hasRole('rental')")
-	 public ResponseEntity<?> addCategory(@RequestBody Category category) {
+	 public ResponseEntity<?> addCategory(@RequestBody Category category) throws IllegalArgumentException,UserNotFoundException{
 
 	        if (category.getUser() == null || category.getUser().getId() <= 0) {
 	            return ResponseEntity.badRequest().body("Valid User ID is required");
@@ -62,6 +65,7 @@ public class CategoryController {
 	/**
 	 * Deletes the category with corresponding id.
 	 * @param id: The id of the category to be deleted.
+	 * @throws DataIntegrityViolationException if foreign key constraint is violated while deleting category.
 	 * Returns deleted category.
 	 * */
 	@DeleteMapping("/category/{id}")
@@ -95,10 +99,11 @@ public class CategoryController {
 	/**
 	 * Returns categories corresponding to specific user id.
 	 * @param id: id of the user whose category details are to be fetched.
+     *@throws IllegalArgumentException if id is null.
 	 * */
 	@GetMapping("/category/{userId}")
 	@PreAuthorize("hasRole('rental')")
-	public ResponseEntity<?> getCategoryByUser(@PathVariable int userId){
+	public ResponseEntity<?> getCategoryByUser(@PathVariable int userId) throws IllegalArgumentException{
 		return ResponseEntity.ok(service.getCategoryByUserId(userId));
 	}
 }

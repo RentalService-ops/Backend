@@ -42,7 +42,6 @@ public class AuthServiceImpl implements AuthService{
 	@Override
 	public Users register(Users user) {
 		user.setPassword(encoder.encode(user.getPassword()));
-		System.out.println(user.getId());
 		return repo.save(user);
 	}
 	
@@ -51,7 +50,8 @@ public class AuthServiceImpl implements AuthService{
 		return repo.findAll();
 	}
 	
-	public Users findUsreById(int id) {
+	@Override
+	public Users findUsreById(int id) throws IllegalArgumentException{
 		return repo.findById(id).get();
 	}
 	@Override

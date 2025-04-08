@@ -21,7 +21,8 @@ public class CustomerQueryServiceImpl implements CustomerQueryService{
 		this.queryRepo=repo;
 	}
 	
-	public void saveQuery(CustomerQuery query) {
+	@Override
+	public void saveQuery(CustomerQuery query){
 		query.setQueryStatus("pending");
 		try {
 		Users user=userRepo.findByEmail(query.getUseremail()).get();
@@ -30,7 +31,6 @@ public class CustomerQueryServiceImpl implements CustomerQueryService{
 		}
 		}
 		catch(Exception e) {
-			
 		}
 		queryRepo.save(query);
 	}

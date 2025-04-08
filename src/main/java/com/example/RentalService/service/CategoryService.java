@@ -4,6 +4,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 
 import com.example.RentalService.DTO.CategoryDTO;
+import com.example.RentalService.Exceptions.UserNotFoundException;
 import com.example.RentalService.model.Category;
 
 public interface CategoryService {
@@ -12,22 +13,25 @@ public interface CategoryService {
      * Adds a new category to the system.
      * 
      * @param category The category object to be added.
+     * @throws IllegalArgumentException if the user id specified in catgory details is null,
+     * @throws UserNotFoundException  if user with specified id is not found.
      * @return The added Category object.
      */
-    Category addCategory(Category category);
+    Category addCategory(Category category) throws IllegalArgumentException,UserNotFoundException;
 
     /**
      * Deletes a category by its ID.
      * 
      * @param id The ID of the category to be deleted.
-     * @throws DataIntegrityViolationException, IllegalArgumentException
+     * @throws DataIntegrityViolationException if foreign key violation occur during category deletion.
+     * @throws IllegalArgumentException if id is null.
      * @return A ResponseEntity containing a CategoryDTO if successful, or an error message.
      */
     ResponseEntity<?> deleteCategory(int id) throws DataIntegrityViolationException,IllegalArgumentException;
     
     /**
      * updates category based on provided details.
-     * @throws IllegalArgumentException
+     * @throws IllegalArgumentException if id is null.
      * @param id id of the category to be updated.
      * @param body updated details of the category provided
      * @return Category object with updated details.
@@ -46,7 +50,8 @@ public interface CategoryService {
      * 
      * @param id The ID of the user whose categories are to be fetched.
      * @return A ResponseEntity containing a list of CategoryDTO objects.
+     * @throws IllegalArgumentException if id is null.
      */
-    ResponseEntity<?> getCategoryByUserId(int id);
+    ResponseEntity<?> getCategoryByUserId(int id) throws IllegalArgumentException;
 }
 

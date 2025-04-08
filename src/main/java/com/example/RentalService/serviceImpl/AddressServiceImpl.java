@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.RentalService.DTO.AddressDTO;
+import com.example.RentalService.Exceptions.UserNotFoundException;
 import com.example.RentalService.model.Address;
 import com.example.RentalService.model.Users;
 import com.example.RentalService.repo.UserRepository;
@@ -22,9 +23,14 @@ public class AddressServiceImpl implements AddressService{
     @Autowired
     private UserRepository usersRepository;
 
-    public AddressDTO addAddress(AddressDTO addressDTO, int userId) {
+    @Override
+	public AddressDTO addAddress(AddressDTO addressDTO, int userId) throws IllegalArgumentException,UserNotFoundException{
         Users user = usersRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .get();
+        
+        if(user == null) {
+        	throw new UserNotFoundException("User not found with specified id");
+        }
 
         Address address = new Address(addressDTO.getStreet(), addressDTO.getCity(), addressDTO.getState(),
                 addressDTO.getZipCode(), addressDTO.getCountry(), user);
@@ -33,14 +39,19 @@ public class AddressServiceImpl implements AddressService{
         return convertToDTO(savedAddress);
     }
 
-    public List<AddressDTO> getAddressesByUser(int userId) {
+    @Override
+	public List<AddressDTO> getAddressesByUser(int userId)  throws IllegalArgumentException{
         List<Address> addresses = addressRepository.findByUserId(userId);
+        if(addresses == null) {
+        	throw new IllegalArgumentException("No address found with specified id.");
+        }
         return addresses.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
-    public AddressDTO updateAddress(int addressId, AddressDTO addressDTO) {
+    @Override
+	public AddressDTO updateAddress(int addressId, AddressDTO addressDTO)  throws IllegalArgumentException{
         Address address = addressRepository.findById(addressId)
-                .orElseThrow(() -> new RuntimeException("Address not found"));
+                .orElseThrow(() -> new IllegalArgumentException("Address not found. Either id is null or address do not exist with specified id."));
 
         address.setStreet(addressDTO.getStreet());
         address.setCity(addressDTO.getCity());
@@ -52,9 +63,10 @@ public class AddressServiceImpl implements AddressService{
         return convertToDTO(updatedAddress);
     }
 
-    public void deleteAddress(int addressId) {
+    @Override
+	public void deleteAddress(int addressId)  throws IllegalArgumentException{
         if (!addressRepository.existsById(addressId)) {
-            throw new RuntimeException("Address not found");
+            throw new IllegalArgumentException("Address not found. Either id is null or address do not exist with specified id.");
         }
         addressRepository.deleteById(addressId);
     }

@@ -12,8 +12,9 @@ public interface JWTService {
      * @param username The username (subject) to include in the token.
      * @param role The role of the user to include in the claims.
      * @return The generated JWT token as a string.
+     * @throws IllegalArgumentException If the input parameters are invalid
      */
-    String generateToken(String userId, String username, String role);
+    String generateToken(String userId, String username, String role) throws IllegalArgumentException;
 
     /**
      * Extracts the username from the JWT token.
@@ -29,6 +30,7 @@ public interface JWTService {
      * @param token The JWT token to be validated.
      * @param userDetails The user details to check the validity of the token.
      * @return True if the token is valid, otherwise false.
+     * @throws IllegalArgumentException If the token is invalid.
      */
-    boolean validateToken(String token, UserDetails userDetails);
+    boolean validateToken(String token, UserDetails userDetails) throws IllegalArgumentException;
 }

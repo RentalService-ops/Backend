@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.example.RentalService.DTO.CategoryDTO;
+import com.example.RentalService.Exceptions.UserNotFoundException;
 import com.example.RentalService.model.Category;
 import com.example.RentalService.model.Users;
 import com.example.RentalService.repo.CategoryRepo;
@@ -25,17 +26,17 @@ public class CategoryServiceImpl implements CategoryService{
 	private AuthServiceImpl userService;
 		
 	@Override
-	public Category addCategory(Category category) {
+	public Category addCategory(Category category) throws IllegalArgumentException,UserNotFoundException{
 
 	    if (category.getUser() == null || category.getUser().getId() == 0) {
-	        throw new RuntimeException("User ID is required but was null or 0.");
+	        throw new IllegalArgumentException("User ID is required but was null or 0.");
 	    }
 
 	    // Fetch the user from DB
 	    Users user = userService.findUsreById(category.getUser().getId());
 
 	    if (user == null) {
-	        throw new RuntimeException("User with ID " + category.getUser().getId() + " not found.");
+	        throw new UserNotFoundException("User with ID " + category.getUser().getId() + " not found.");
 	    }
 
 	    category.setUser(user); // Assign the fetched user
@@ -71,7 +72,7 @@ public class CategoryServiceImpl implements CategoryService{
 	}
 	
 	@Override
-	public ResponseEntity<?> getCategoryByUserId(int id){
+	public ResponseEntity<?> getCategoryByUserId(int id) throws IllegalArgumentException{
 		List<Category> categories=repo.findByUserId(id).get();
 		
 		if(categories != null) {
@@ -82,7 +83,7 @@ public class CategoryServiceImpl implements CategoryService{
 					.collect(Collectors.toList())
 					);
 		}
-		return null;
+		throw new IllegalArgumentException("User id is null or not provided");
 	}
 
 
