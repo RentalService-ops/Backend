@@ -6,7 +6,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -66,7 +65,7 @@ public class EquipmentServiceImpl implements EquipmentService{
         }
 
         // Generate a unique filename
-        String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+        String fileName = file.getOriginalFilename();
         Path filePath = Paths.get(IMAGE_DIRECTORY, fileName);
 
         // Save file to disk

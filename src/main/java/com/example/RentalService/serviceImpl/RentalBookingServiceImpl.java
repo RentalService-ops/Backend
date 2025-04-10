@@ -1,5 +1,6 @@
 package com.example.RentalService.serviceImpl;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -7,17 +8,22 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
 
+import com.example.RentalService.DTO.NotificationDTO;
 import com.example.RentalService.DTO.RentalBookingsDTO;
 import com.example.RentalService.model.BookingStatus;
 import com.example.RentalService.model.Equipment;
+import com.example.RentalService.model.Notification;
 import com.example.RentalService.model.Rental_Bookings;
 import com.example.RentalService.model.Users;
 import com.example.RentalService.repo.EquipmentRepo;
+import com.example.RentalService.repo.NotificationRepository;
 import com.example.RentalService.repo.RentalBookingRepository;
 import com.example.RentalService.repo.UserRepository;
 import com.example.RentalService.service.RentalBookingService;
+
 
 @Service
 public class RentalBookingServiceImpl implements RentalBookingService{
@@ -31,27 +37,75 @@ public class RentalBookingServiceImpl implements RentalBookingService{
 	@Autowired
 	UserRepository userRepositry;
 	
+	@Autowired
+	private SimpMessageSendingOperations messagingTemplate;
+	
+	@Autowired
+	private NotificationRepository notificationRepository;
+
+	
 	
 	public List<Rental_Bookings> findByRentalId(int id){
 		return rentalRepo.findByRenter_Id(id);
 	}
 	
+	
 	public Rental_Bookings rejectBooking(int id) {
-		Rental_Bookings booking=rentalRepo.findById(id).get();
-		booking.setStatus(BookingStatus.REJECTED);
-		rentalRepo.save(booking);
-		return booking;
+	    Rental_Bookings booking = rentalRepo.findById(id).orElseThrow();
+	    booking.setStatus(BookingStatus.REJECTED);
+	    rentalRepo.save(booking);
+
+	    Equipment equipment = equipmentRepo.findByEquipmentId(booking.getEquipment().getEquipmentId());
+	    String msg = "Your booking of " + equipment.getName() + " has been rejected.";
+	    int userId = booking.getUser().getId();
+
+	    // Save to database
+	    Notification notificationEntity = Notification.builder()
+	            .message(msg)
+	            .userId(userId)
+	            .timestamp(LocalDateTime.now())
+	            .build();
+	    notificationRepository.save(notificationEntity);
+
+	    // Send WebSocket notification
+	    NotificationDTO notificationDTO = new NotificationDTO(msg);
+	    messagingTemplate.convertAndSend("/topic/booking/" + userId, notificationDTO);
+
+	    return booking;
 	}
+
+
 	
 	public Rental_Bookings approveBooking(int id) {
-		Rental_Bookings booking=rentalRepo.findById(id).get();
-		booking.setStatus(BookingStatus.APPROVED);
-		Equipment equipment=equipmentRepo.findById(booking.getEquipment().getEquipmentId()).get();
-		equipment.setQuantity(equipment.getQuantity()-booking.getEquipment_quantity());
-		equipmentRepo.save(equipment);
-		rentalRepo.save(booking);
-		return booking;
+	    Rental_Bookings booking = rentalRepo.findById(id).orElseThrow();
+	    booking.setStatus(BookingStatus.APPROVED);
+
+	    Equipment equipment = equipmentRepo.findById(booking.getEquipment().getEquipmentId())
+	            .orElseThrow();
+	    equipment.setQuantity(equipment.getQuantity() - booking.getEquipment_quantity());
+	    equipmentRepo.save(equipment);
+
+	    rentalRepo.save(booking);
+
+	    String msg = "Your booking of " + equipment.getName() + " has been approved!";
+	    int userId = booking.getUser().getId();
+
+	    // Save to database
+	    Notification notificationEntity = Notification.builder()
+	            .message(msg)
+	            .userId(userId)
+	            .timestamp(LocalDateTime.now())
+	            .build();
+	    notificationRepository.save(notificationEntity);
+
+	    // Send WebSocket notification
+	    NotificationDTO notificationDTO = new NotificationDTO(msg);
+	    messagingTemplate.convertAndSend("/topic/booking/" + userId, notificationDTO);
+
+	    return booking;
 	}
+
+
 	
 	/**
      * Creates a new booking.
