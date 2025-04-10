@@ -57,7 +57,6 @@ public class AuthServiceImpl implements AuthService{
 	@Override
 	public ResponseEntity<?> verify(@RequestBody Users user, HttpServletResponse response) {
 		
-		System.out.println(user.getEmail());
 	    Authentication authentication = authManager.authenticate(
 	        new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword()));
 

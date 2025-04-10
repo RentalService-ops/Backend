@@ -24,6 +24,8 @@ import com.example.RentalService.repo.RentalBookingRepository;
 import com.example.RentalService.repo.UserRepository;
 import com.example.RentalService.service.RentalBookingService;
 
+import jakarta.transaction.Transactional;
+
 
 @Service
 public class RentalBookingServiceImpl implements RentalBookingService{
@@ -58,6 +60,10 @@ public class RentalBookingServiceImpl implements RentalBookingService{
 	    Equipment equipment = equipmentRepo.findByEquipmentId(booking.getEquipment().getEquipmentId());
 	    String msg = "Your booking of " + equipment.getName() + " has been rejected.";
 	    int userId = booking.getUser().getId();
+	    
+	    if(equipment.getQuantity() < booking.getEquipment_quantity()) {
+	    	msg="Booking rejected due to insufficient quantity available.";
+	    }
 
 	    // Save to database
 	    Notification notificationEntity = Notification.builder()
@@ -75,15 +81,20 @@ public class RentalBookingServiceImpl implements RentalBookingService{
 	}
 
 
-	
+	@Transactional
 	public Rental_Bookings approveBooking(int id) {
 	    Rental_Bookings booking = rentalRepo.findById(id).orElseThrow();
-	    booking.setStatus(BookingStatus.APPROVED);
 
 	    Equipment equipment = equipmentRepo.findById(booking.getEquipment().getEquipmentId())
 	            .orElseThrow();
+	    
+	    if(equipment.getQuantity() < booking.getEquipment_quantity()) {
+	    	return rejectBooking(id);
+	    }
 	    equipment.setQuantity(equipment.getQuantity() - booking.getEquipment_quantity());
 	    equipmentRepo.save(equipment);
+	    
+	    booking.setStatus(BookingStatus.APPROVED);
 
 	    rentalRepo.save(booking);
 
