@@ -4,11 +4,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.RentalService.DTO.ResetPasswordDTO;
 import com.example.RentalService.DTO.UsersDTO;
 import com.example.RentalService.model.Users;
 import com.example.RentalService.service.AuthService;
@@ -52,5 +55,26 @@ public class AuthController {
 	public ResponseEntity<?> login(@RequestBody Users user) {
 		
 		return service.verify(user,response);
+	}
+	
+	@GetMapping("/otp")
+	public ResponseEntity<?> sendOTP(@RequestParam("useremail") String useremail){
+		service.sendOTP(useremail);
+		return ResponseEntity.ok("");
+	}
+	
+	@PostMapping("/verify-otp")
+	public ResponseEntity<?> verifyOTP(@RequestBody ResetPasswordDTO resetPassword){
+		if(service.verifyOTP(resetPassword.getSentOTP(),resetPassword.getEmail())) {
+			return ResponseEntity.ok("OTP verified");
+		}
+		return ResponseEntity.status(401).body("Wrong OTP entered.");
+		
+	}
+	
+	@PostMapping("/reset-password")
+	public ResponseEntity<?> resetPassword(@RequestBody ResetPasswordDTO resetPassword){
+		service.resetPassword(resetPassword.getResetPassword(),resetPassword.getEmail());
+		return ResponseEntity.ok("Password has been reset.");
 	}
 }

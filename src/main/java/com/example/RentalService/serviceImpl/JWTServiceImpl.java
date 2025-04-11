@@ -49,6 +49,24 @@ public class JWTServiceImpl implements JWTService{
                 .compact();
     }
       
+      
+      @Override
+	  public String generateToken(String useremail) throws IllegalArgumentException{
+    	
+    	if(useremail==null) {
+    		 throw new IllegalArgumentException("Please provide all the details.");
+    	}
+    	 
+    	Map<String, Object> claims = new HashMap<>();
+        claims.put("email", useremail);  // ✅ Add user_id to claims
+
+        return Jwts.builder()
+                .claims(claims)
+                .issuedAt(new Date(System.currentTimeMillis()))
+                .expiration(new Date(System.currentTimeMillis() + (1000 * 60 * 10)))
+                .signWith(getKey())
+                .compact();
+    }
     
   /**
    * Retrieves the HMAC secret key used for signing or verifying JWT tokens.

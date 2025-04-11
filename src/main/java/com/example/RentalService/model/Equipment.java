@@ -13,7 +13,7 @@ import jakarta.persistence.ManyToOne;
 
 @Entity
 public class Equipment {
-
+	
     // Property to store the unique ID of the equipment
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -48,10 +48,21 @@ public class Equipment {
     // Property to store the URL for an image of the equipment
     @Column(length = 255)
     private String imageUrl;
+    
+    @Column()
+    private boolean isActive;
 
     // Constructors
 
-    /**
+    public boolean isActive() {
+		return isActive;
+	}
+
+	public void setActive(boolean isActive) {
+		this.isActive = isActive;
+	}
+
+	/**
      * Default constructor for Equipment, required by JPA.
      */
     public Equipment() {

@@ -19,6 +19,7 @@ import com.example.RentalService.Exceptions.UserNotFoundException;
 import com.example.RentalService.model.Equipment;
 import com.example.RentalService.model.Users;
 import com.example.RentalService.repo.EquipmentRepo;
+import com.example.RentalService.repo.RentalBookingRepository;
 import com.example.RentalService.service.AuthService;
 import com.example.RentalService.service.EquipmentService;
 
@@ -30,6 +31,9 @@ public class EquipmentServiceImpl implements EquipmentService{
     
     @Autowired
     private AuthService userService;
+    
+    @Autowired
+    RentalBookingRepository rentalRepo;
 
     private static final String IMAGE_DIRECTORY = "D:\\java\\Project\\Backend\\src\\Image";
 
@@ -48,6 +52,7 @@ public class EquipmentServiceImpl implements EquipmentService{
 	    }
 
 	    equipment.setUser(user); // Assign the fetched user
+	    equipment.setActive(true);
     	
     	if (imageFile != null && !imageFile.isEmpty()) {
             String fileName = storeImage(imageFile);
@@ -90,8 +95,10 @@ public class EquipmentServiceImpl implements EquipmentService{
 
         for(Equipment equipment:equipmentsObtained) {
            EquipmentDTO equipmentDTO = new EquipmentDTO(equipment);
-           equipments.add(equipmentDTO);
-        }
+           	if(equipment.isActive()) {
+				equipments.add(equipmentDTO);
+			}
+		}
 
         return equipments;
      }
@@ -104,7 +111,9 @@ public class EquipmentServiceImpl implements EquipmentService{
         if(equipmentsObtained!=null) {
 			for(Equipment equipment : equipmentsObtained) {
 			   EquipmentDTO equipmentDTO = new EquipmentDTO(equipment);
-			   equipments.add(equipmentDTO);
+			   if(equipment.isActive()) {
+				equipments.add(equipmentDTO);
+			}
 			}
 	        return ResponseEntity.ok(equipments);
 		}
@@ -133,6 +142,11 @@ public class EquipmentServiceImpl implements EquipmentService{
 
      @Override
 	 public void deleteEquipment(int id) throws IllegalArgumentException{
-        this.equipmentRepo.deleteById(id);
+    	 Equipment equipment=this.equipmentRepo.findById(id).get();
+    	 if(equipment == null) {
+    		 throw new IllegalArgumentException("Id is null or equipment with given id does not exist.");
+    	 }
+    	 equipment.setActive(false);  
+    	 equipmentRepo.save(equipment);
      }
 }

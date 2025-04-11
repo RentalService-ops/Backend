@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import com.example.RentalService.Exceptions.ImageUnsupportedException;
 import com.example.RentalService.Exceptions.UserNotFoundException;
+import com.example.RentalService.Exceptions.WrongUserEmailException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import jakarta.servlet.http.HttpServletResponse;
@@ -18,7 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @ControllerAdvice
 @Slf4j
-public class CustomExceptionHandler {
+public class GlobalExceptionHandler {
 	
 	@ExceptionHandler(value= {MaxUploadSizeExceededException.class})
 	public ResponseEntity<?> handleMaxUploadSizeExceededException(HttpServletResponse response, MaxUploadSizeExceededException exception) throws IOException{
@@ -54,5 +55,11 @@ public class CustomExceptionHandler {
 	public ResponseEntity<?> handleUserNotFoundException(UserNotFoundException exception){
 		log.error(exception.getMessage());
 		return ResponseEntity.status(404).body(exception.getMessage());
+	}
+	
+	@ExceptionHandler(WrongUserEmailException.class)
+	public ResponseEntity<?> handleWrongUserEmailException(WrongUserEmailException exception){
+		log.error(exception.getMessage());
+		return ResponseEntity.status(401).body(exception.getMessage());
 	}
 }

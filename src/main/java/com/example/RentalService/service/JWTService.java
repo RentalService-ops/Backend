@@ -15,6 +15,15 @@ public interface JWTService {
      * @throws IllegalArgumentException If the input parameters are invalid
      */
     String generateToken(String userId, String username, String role) throws IllegalArgumentException;
+    
+    /**
+     * Generates a JWT token with the provided user details.
+     *
+     * @param useremail The email of the user to include in the token.
+     * @return The generated JWT token as a string.
+     * @throws IllegalArgumentException If the input parameters are invalid
+     */
+    String generateToken(String useremail) throws IllegalArgumentException;
 
     /**
      * Extracts the username from the JWT token.

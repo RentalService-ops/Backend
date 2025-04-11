@@ -1,5 +1,6 @@
 package com.example.RentalService.service;
 
+import java.math.BigInteger;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
@@ -44,4 +45,21 @@ public interface AuthService {
      *         or an error message with status 401 if the credentials are invalid.
      */
     ResponseEntity<?> verify(Users user, HttpServletResponse response);
+    
+    /**
+     * Sends OTP via email to specified user email address.
+     * @param useremail the email of the user where the OTP is to be sent.
+     * */
+    void sendOTP(String useremail);
+    
+    /**
+     * Verifies OTP sent by the user.
+     * @param sentOTP the OTP to be verified.
+     * */
+    boolean verifyOTP(BigInteger sentOTP,String email);
+    
+    /**
+     * Resets the password as specified by user.
+     * */
+    void resetPassword(String password, String email);
 }

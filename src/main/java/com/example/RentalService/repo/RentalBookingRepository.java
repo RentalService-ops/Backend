@@ -12,5 +12,4 @@ import com.example.RentalService.model.Rental_Bookings;
 public interface RentalBookingRepository extends JpaRepository<Rental_Bookings,Integer>{
 	List<Rental_Bookings> findByRenter_Id(int rentalId);  
 	List<Rental_Bookings> findByUser_Id(int userId);
-
 }

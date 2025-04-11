@@ -30,10 +30,19 @@ public class Users {
     // Property to store the phone number of the user
     private BigInteger phoneNumber;
 
-
+    private BigInteger OTP;
+    
     // Constructors
 
-    /**
+    public BigInteger getOTP() {
+		return OTP;
+	}
+
+	public void setOTP(BigInteger oTP) {
+		OTP = oTP;
+	}
+
+	/**
      * Constructor to initialize the user with specific username, password, email, role, and phone number.
      * 
      * @param username the username of the user.
