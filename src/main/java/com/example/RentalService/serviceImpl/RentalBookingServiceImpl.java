@@ -6,6 +6,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
@@ -47,11 +49,13 @@ public class RentalBookingServiceImpl implements RentalBookingService{
 
 	
 	
+	@Override
 	public List<Rental_Bookings> findByRentalId(int id){
 		return rentalRepo.findByRenter_Id(id);
 	}
 	
 	
+	@Override
 	public Rental_Bookings rejectBooking(int id) {
 	    Rental_Bookings booking = rentalRepo.findById(id).orElseThrow();
 	    booking.setStatus(BookingStatus.REJECTED);
@@ -81,6 +85,7 @@ public class RentalBookingServiceImpl implements RentalBookingService{
 	}
 
 
+	@Override
 	@Transactional
 	public Rental_Bookings approveBooking(int id) {
 	    Rental_Bookings booking = rentalRepo.findById(id).orElseThrow();
@@ -123,7 +128,8 @@ public class RentalBookingServiceImpl implements RentalBookingService{
      */
 
 
-    public ResponseEntity<?> equipmentBooking(Rental_Bookings booking) {
+    @Override
+	public ResponseEntity<?> equipmentBooking(Rental_Bookings booking) {
         if (booking == null) {
             return ResponseEntity.badRequest().body("Booking request cannot be null");
         }
@@ -160,7 +166,8 @@ public class RentalBookingServiceImpl implements RentalBookingService{
     /**
      * Retrieves booking details by user ID.
      */
-    public ResponseEntity<?> getBookingDetailsByUserId(int id) {
+    @Override
+	public ResponseEntity<?> getBookingDetailsByUserId(int id) {
         List<Rental_Bookings> bookings = rentalRepo.findByUser_Id(id);
         
         if (!bookings.isEmpty()) {
@@ -177,7 +184,8 @@ public class RentalBookingServiceImpl implements RentalBookingService{
     /**
      * Cancels a booking if it is still pending.
      */
-    public ResponseEntity<?> cancelBooking(int bookingId) {
+    @Override
+	public ResponseEntity<?> cancelBooking(int bookingId) {
         Optional<Rental_Bookings> bookingOptional = rentalRepo.findById(bookingId);
         
         if (bookingOptional.isPresent()) {
@@ -194,4 +202,40 @@ public class RentalBookingServiceImpl implements RentalBookingService{
         
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Booking not found.");
     }
+    
+    @Override
+	public Page<Rental_Bookings> getAllBookings(Pageable pageable) {
+		return rentalRepo.findAll(pageable);
+	}
+
+
+	@Override
+	public long countBookingsByRenterUsername(String renterUsername) {
+	    return rentalRepo.countByEquipment_User_Username(renterUsername);
+
+	}
+
+
+	@Override
+	public boolean updateBookingStatus(int id, BookingStatus status) {
+		Optional<Rental_Bookings> bookingOptional = rentalRepo.findById(id);
+		if (bookingOptional.isPresent()) {
+			Rental_Bookings booking = bookingOptional.get();
+			booking.setStatus(status);
+			rentalRepo.save(booking);
+			return true;
+		}
+		return false;
+	}
+
+
+	@Override
+	public boolean deleteBooking(int id) {
+		Optional<Rental_Bookings> bookingOptional = rentalRepo.findById(id);
+		if (bookingOptional.isPresent()) {
+			rentalRepo.deleteById(id);
+			return true;
+		}
+		return false;
+	}
 }

@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
@@ -149,4 +151,21 @@ public class EquipmentServiceImpl implements EquipmentService{
     	 equipment.setActive(false);  
     	 equipmentRepo.save(equipment);
      }
+     
+ 	@Override
+ 	public Page<Equipment> searchEquipmentByName(String name, Pageable pageable) {
+ 		return equipmentRepo.findByNameContainingIgnoreCase(name, pageable);
+
+ 	}
+
+ 	@Override
+ 	public Page<Equipment> getAllEquipment(Pageable pageable) {
+ 		return equipmentRepo.findAll(pageable);
+
+ 	}
+
+ 	@Override
+ 	public Equipment getEquipmentById(int id) {
+ 		return equipmentRepo.findById(id).orElse(null);
+ 	}
 }

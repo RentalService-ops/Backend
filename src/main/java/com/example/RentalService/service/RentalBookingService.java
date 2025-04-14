@@ -2,8 +2,11 @@ package com.example.RentalService.service;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 
+import com.example.RentalService.model.BookingStatus;
 import com.example.RentalService.model.Rental_Bookings;
 
 public interface RentalBookingService {
@@ -55,4 +58,12 @@ public interface RentalBookingService {
      * @return a ResponseEntity containing the status of the cancellation
      */
     ResponseEntity<?> cancelBooking(int bookingId);
+    
+	Page<Rental_Bookings> getAllBookings(Pageable pageable);
+
+	public long countBookingsByRenterUsername(String renterUsername);
+
+	boolean updateBookingStatus(int id, BookingStatus valueOf);
+
+	boolean deleteBooking(int id);
 }

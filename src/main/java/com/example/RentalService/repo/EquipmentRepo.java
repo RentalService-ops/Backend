@@ -2,6 +2,8 @@ package com.example.RentalService.repo;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.example.RentalService.model.Equipment;
@@ -12,4 +14,6 @@ public interface EquipmentRepo extends JpaRepository<Equipment, Integer> {
 	   Equipment findByEquipmentId(int var1);
 	   
 	   List<Equipment> findByCategory_CategoryId(int categoryId);
+	   
+	   Page<Equipment> findByNameContainingIgnoreCase(String name, Pageable pageable);
 }

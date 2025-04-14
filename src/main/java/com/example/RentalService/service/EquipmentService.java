@@ -2,6 +2,8 @@ package com.example.RentalService.service;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.MultipartFile;
@@ -60,4 +62,10 @@ public interface EquipmentService {
      * @throws IllegalArgumentException if id is null.
      */
     void deleteEquipment(int id) throws IllegalArgumentException;
+    
+	Page<Equipment> searchEquipmentByName(String search, Pageable pageable);
+
+	Page<Equipment> getAllEquipment(Pageable pageable);
+
+	Equipment getEquipmentById(int id);
 }

@@ -5,6 +5,8 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -107,6 +109,12 @@ public class CategoryServiceImpl implements CategoryService{
 		}
 		
 		throw new IllegalArgumentException("Entity not found with specified details.Either ID is not an Integer or the user with specified ID does not exist.");
+	}
+	
+	@Override
+	public Page<Category> getAllCategories(Pageable pageable) {
+        return repo.findAll(pageable); //  returns a Page<Category>
+
 	}
 	
 }

@@ -1,5 +1,8 @@
 package com.example.RentalService.serviceImpl;
 
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,5 +36,38 @@ public class CustomerQueryServiceImpl implements CustomerQueryService{
 		catch(Exception e) {
 		}
 		queryRepo.save(query);
+	}
+	
+	@Override
+	public List<CustomerQuery> getAllQueries() {
+		return queryRepo.findAll();
+
+	}
+
+	@Override
+	public List<CustomerQuery> getPendingQueries() {
+		return queryRepo.findByQueryStatus("pending");
+	}
+
+	@Override
+	public boolean resolveQuery(int id) {
+		Optional<CustomerQuery> query = queryRepo.findById(id);
+		if (query.isPresent() && query.get().getQueryStatus().equals("pending")) {
+			query.get().setQueryStatus("resolved");
+			queryRepo.save(query.get());
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public boolean markQueryAsNotResolved(int id) {
+		Optional<CustomerQuery> query = queryRepo.findById(id);
+		if (query.isPresent() && query.get().getQueryStatus().equalsIgnoreCase("resolved")) {
+			query.get().setQueryStatus("pending");
+			queryRepo.save(query.get());
+			return true;
+		}
+		return false;
 	}
 }

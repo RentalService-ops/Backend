@@ -1,6 +1,8 @@
 package com.example.RentalService.service;
 
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 
 import com.example.RentalService.DTO.CategoryDTO;
@@ -53,5 +55,7 @@ public interface CategoryService {
      * @throws IllegalArgumentException if id is null.
      */
     ResponseEntity<?> getCategoryByUserId(int id) throws IllegalArgumentException;
+    
+	Page<Category> getAllCategories(Pageable pageable);
 }
 
