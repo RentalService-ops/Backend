@@ -99,7 +99,7 @@ public class AuthServiceImpl implements AuthService{
 		if(user==null) {
 			throw new WrongUserEmailException("Email is not registered.");
 		}
-		Double otpvalue=Math.random()*1000000;
+		Double otpvalue=Math.random()*1000000 + 100000;
 		BigInteger otp= BigInteger.valueOf(otpvalue.longValue());
 		user.setOTP(otp);
 		

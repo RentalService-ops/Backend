@@ -58,7 +58,7 @@ public class JWTServiceImpl implements JWTService{
     	}
     	 
     	Map<String, Object> claims = new HashMap<>();
-        claims.put("email", useremail);  // ✅ Add user_id to claims
+        claims.put("email", useremail); 
 
         return Jwts.builder()
                 .claims(claims)

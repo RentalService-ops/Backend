@@ -44,7 +44,7 @@ public class SecurityConfig {
                 .requestMatchers("/login", "/register", "/api/user/contact", "/ws/**","/verify-otp","/otp","/reset-password").permitAll() // ✅ Allow WebSocket endpoint
                 .anyRequest().authenticated()
             )
-            .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class);
+            .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class);//UsernamePasswordAuthentication filter calls the DAO Authentication provider for authentication
 
         return http.build();
     }
