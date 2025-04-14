@@ -10,10 +10,12 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name="Customer_query")
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
 public class CustomerQuery {
 
