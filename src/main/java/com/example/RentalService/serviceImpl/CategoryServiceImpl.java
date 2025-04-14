@@ -12,8 +12,10 @@ import org.springframework.stereotype.Service;
 import com.example.RentalService.DTO.CategoryDTO;
 import com.example.RentalService.Exceptions.UserNotFoundException;
 import com.example.RentalService.model.Category;
+import com.example.RentalService.model.Equipment;
 import com.example.RentalService.model.Users;
 import com.example.RentalService.repo.CategoryRepo;
+import com.example.RentalService.repo.EquipmentRepo;
 import com.example.RentalService.service.CategoryService;
 
 @Service
@@ -21,6 +23,9 @@ public class CategoryServiceImpl implements CategoryService{
 
 	@Autowired
 	private CategoryRepo repo;
+	
+	@Autowired
+	private EquipmentRepo equipmentRepo;
 	
 	@Autowired
 	private AuthServiceImpl userService;
@@ -49,12 +54,16 @@ public class CategoryServiceImpl implements CategoryService{
 		
 		Category category = repo.findById(id).get();
 		if(category!=null) {
-			try {
-				repo.deleteById(id);
+			List<Equipment> equipments=equipmentRepo.findByCategory_CategoryId(id);
+			
+			for(Equipment equipment:equipments) {
+				equipment.setCategory(null);
+				equipment.setActive(false);
+				equipmentRepo.save(equipment);
 			}
-			catch(Exception e) {
-				throw new DataIntegrityViolationException(e.getMessage());
-			}
+			
+			repo.deleteById(id);
+			
 			return new ResponseEntity<>(new CategoryDTO(category),HttpStatus.OK);
 		}
 		

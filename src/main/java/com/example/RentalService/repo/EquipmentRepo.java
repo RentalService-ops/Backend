@@ -10,4 +10,6 @@ public interface EquipmentRepo extends JpaRepository<Equipment, Integer> {
 	   List<Equipment> findByUserId(int var1);
 
 	   Equipment findByEquipmentId(int var1);
+	   
+	   List<Equipment> findByCategory_CategoryId(int categoryId);
 }

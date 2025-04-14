@@ -29,8 +29,8 @@ public class Equipment {
     private Users user;
 
     // Property to store the category to which the equipment belongs
-    @ManyToOne(fetch = FetchType.EAGER, optional = false)
-    @JoinColumn(name = "category_id", nullable = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = true)
+    @JoinColumn(name = "category_id")
     private Category category;
 
     // Property to store the name of the equipment

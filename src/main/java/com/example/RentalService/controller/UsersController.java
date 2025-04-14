@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.RentalService.DTO.UsersDTO;
+import com.example.RentalService.Exceptions.UserNotFoundException;
 import com.example.RentalService.model.CustomerQuery;
 import com.example.RentalService.model.Users;
 import com.example.RentalService.service.CustomerQueryService;
@@ -42,11 +43,12 @@ public class UsersController {
 	
 	/**
 	 * @Param id: id of the User whose user details are to be fetched.
-	 * Returns the user,renter with the corresponding id provided.
+	 * @Return the user,renter with the corresponding id provided.
+	 * @throws UserNotFoundException if user is not found with specified id.
 	 * */
 	@GetMapping("/getUser")
 	@PreAuthorize("hasRole('rental') or hasRole('admin') or hasRole('user')")
-	public ResponseEntity<UsersDTO> getUserByUserId(@RequestParam("id") int id) {
+	public ResponseEntity<UsersDTO> getUserByUserId(@RequestParam("id") int id) throws UserNotFoundException{
 		return ResponseEntity.ok(new UsersDTO(service.getUserByUserId(id)));
 	}
 	
@@ -55,7 +57,7 @@ public class UsersController {
 	 * provided updated user details
 	 * @Param id: id of the user to be updated
 	 * @Param userDTO: Updated user details provided.
-	 * Returns the Users object with updated details.
+	 * @return the Users object with updated details.
 	 * */
 	@PostMapping(value={"/updateUser"})
 	@PreAuthorize("hasRole('rental') or hasRole('admin') or hasRole('user')")
