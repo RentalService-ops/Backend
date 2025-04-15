@@ -1,0 +1,119 @@
+package com.example.RentalService.serviceImpl;
+
+
+import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
+import com.example.RentalService.DTO.CreatePaymentRequestDTO;
+import com.example.RentalService.DTO.VerifyPaymentRequestDTO;
+import com.example.RentalService.model.Payment;
+import com.example.RentalService.model.Rental_Bookings;
+import com.example.RentalService.model.Users;
+import com.example.RentalService.repo.PaymentRepository;
+import com.example.RentalService.repo.RentalBookingRepository;
+import com.example.RentalService.repo.UserRepository;
+import com.example.RentalService.service.PaymentService;
+import com.razorpay.Order;
+import com.razorpay.RazorpayClient;
+import com.razorpay.RazorpayException;
+import com.razorpay.Utils;
+
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+
+@Service
+@RequiredArgsConstructor
+@Transactional
+public class PaymentServiceImpl implements PaymentService {
+
+    @Value("${razorpay.key_id}")
+    private String keyId;
+
+    @Value("${razorpay.key_secret}")
+    private String keySecret;
+
+    private final PaymentRepository paymentRepository;
+    private final UserRepository usersRepository;
+    private final RentalBookingRepository rentalBookingRepository;
+
+    private RazorpayClient getRazorpayClient() throws RazorpayException {
+        return new RazorpayClient(keyId, keySecret);
+    }
+
+
+
+    @Override
+    public String createOrder(CreatePaymentRequestDTO request) throws RazorpayException {
+        // Initialize Razorpay client
+        RazorpayClient client = getRazorpayClient();
+
+        // Create order request
+        JSONObject orderRequest = new JSONObject();
+        orderRequest.put("amount", request.getAmount() * 100); // Convert amount to paisa
+        orderRequest.put("currency", "INR");
+        orderRequest.put("receipt", "txn_" + System.currentTimeMillis());
+        orderRequest.put("payment_capture", 1);
+        // Create Razorpay order
+        Order razorOrder = client.orders.create(orderRequest);
+
+        // Fetch User and Booking information from DB
+        Users user = usersRepository.findById(request.getUserId())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        Rental_Bookings booking = rentalBookingRepository.findById(request.getBookingId())
+                .orElseThrow(() -> new RuntimeException("Booking not found"));
+
+        // Create Payment entity without payment ID and signature initially
+        Payment payment = Payment.builder()
+                .razorpayOrderId(razorOrder.get("id"))
+                .amount(request.getAmount().doubleValue()) // Save amount in INR
+                .currency("INR")
+                .status("CREATED") // Set the initial status to 'CREATED'
+                .paymentDate(java.time.LocalDate.now()) // Current date as payment date
+                .user(user)
+                .order(booking) // Associated order (rental booking)
+                .build();
+
+        // Save the payment record (without razorpay_payment_id)
+        paymentRepository.save(payment);
+
+        // Return the Razorpay order details as a string (for front-end)
+        return razorOrder.toString();
+    }
+
+
+    @Override
+    public String verifyPayment(VerifyPaymentRequestDTO request) {
+        // Fetch payment using Razorpay Order ID
+        Payment payment = paymentRepository.findByRazorpayOrderId(request.getOrderId());
+        if (payment == null) {
+            return "Invalid Razorpay Order ID"; // Handle invalid order ID
+        }
+
+        // Generate the signature for verification
+        String data = request.getOrderId() + "|" + request.getPaymentId();
+        String generatedSignature = null;
+
+        try {
+            generatedSignature = Utils.getHash(data, keySecret); // Generate the hash for signature comparison
+        } catch (RazorpayException e) {
+            return "Error generating signature"; // Handle errors in signature generation
+        }
+
+        // Compare the generated signature with the received signature
+        if (generatedSignature.equals(request.getSignature())) {
+            // Payment is verified, update payment status to 'PAID'
+            payment.setRazorpayPaymentId(request.getPaymentId());
+            payment.setRazorpaySignature(request.getSignature());
+            payment.setStatus("PAID");
+
+            // Save the updated payment record
+            paymentRepository.save(payment);
+            return "Payment Verified and Status Updated to PAID"; // Successful verification
+        } else {
+            return "Payment Verification Failed"; // Failed verification
+        }
+    }
+
+
+}

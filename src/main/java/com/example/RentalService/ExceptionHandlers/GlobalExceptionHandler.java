@@ -36,7 +36,7 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(DataIntegrityViolationException.class)
 	public ResponseEntity<?> handleDataIntegrityViolationException(HttpServletResponse response,DataIntegrityViolationException exception) throws IOException{
 		log.error(exception.getMessage());
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST.value()).body("The category you are trying to delete is in use. Please remove the equipment associated with this category first.");
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST.value()).body(exception.getMessage());
 	}
 	
 	@ExceptionHandler(ImageUnsupportedException.class)
