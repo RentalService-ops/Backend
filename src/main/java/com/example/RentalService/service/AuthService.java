@@ -55,11 +55,13 @@ public interface AuthService {
     /**
      * Verifies OTP sent by the user.
      * @param sentOTP the OTP to be verified.
+     * @param email the email of the user whose OTP is to be verified.
      * */
     boolean verifyOTP(BigInteger sentOTP,String email);
     
     /**
      * Resets the password as specified by user.
+     * @param password the new password to be reset
      * */
     void resetPassword(String password, String email);
 }

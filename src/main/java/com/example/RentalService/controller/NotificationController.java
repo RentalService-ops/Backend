@@ -13,11 +13,16 @@ import com.example.RentalService.service.NotificationService;
 @RestController
 @RequestMapping("/api/notification")
 public class NotificationController {
-
+	
+	//Notification service object for interacting with the database.
 	@Autowired
 	private NotificationService notificationService;
 	
-	
+	/**
+	 * Retrieves notifications for a specific user based on the user ID.
+	 * @param id the ID of the user whose notifications are to be retrieved
+	 * @return a ResponseEntity containing the user's notifications or an appropriate error message
+	 */
     @PreAuthorize("hasAnyRole('ROLE_user')")
 	@GetMapping("/{id}")
 	public ResponseEntity<?> getNotificationByUserId(@PathVariable("id") int id){

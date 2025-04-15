@@ -96,8 +96,8 @@ public class EquipmentServiceImpl implements EquipmentService{
         List<Equipment> equipmentsObtained = equipmentRepo.findAll();
 
         for(Equipment equipment:equipmentsObtained) {
-           EquipmentDTO equipmentDTO = new EquipmentDTO(equipment);
            	if(equipment.isActive()) {
+                EquipmentDTO equipmentDTO = new EquipmentDTO(equipment);
 				equipments.add(equipmentDTO);
 			}
 		}
@@ -112,8 +112,8 @@ public class EquipmentServiceImpl implements EquipmentService{
         
         if(equipmentsObtained!=null) {
 			for(Equipment equipment : equipmentsObtained) {
-			   EquipmentDTO equipmentDTO = new EquipmentDTO(equipment);
 			   if(equipment.isActive()) {
+				EquipmentDTO equipmentDTO = new EquipmentDTO(equipment);
 				equipments.add(equipmentDTO);
 			}
 			}

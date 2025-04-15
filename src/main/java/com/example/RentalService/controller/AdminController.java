@@ -104,12 +104,6 @@ public class AdminController {
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 	}
 
-	// Get all queries (for admin panel)
-	@GetMapping("/queries/unresolved")
-	public ResponseEntity<List<CustomerQuery>> getUnresolvedQueries() {
-		return ResponseEntity.ok(queryService.getAllQueries());
-	}
-
 	// Get only unresolved queries
 	@GetMapping("/queries/pending")
 	public ResponseEntity<List<CustomerQuery>> getPendingQueries() {
@@ -127,18 +121,7 @@ public class AdminController {
 		}
 	}
 
-	// Mark a query as not resolved
-	@PutMapping("/queries/{id}/notresolved")
-	public ResponseEntity<String> markQueryAsNotResolved(@PathVariable int id) {
-		boolean updated = queryService.markQueryAsNotResolved(id);
-		if (updated) {
-			return ResponseEntity.ok("Query marked as Not Resolved.");
-		} else {
-			return ResponseEntity.badRequest().body("Query not found or already pending.");
-		}
-	}
-
-//  Get all rental equipment
+	//  Get all rental equipment
 	@GetMapping("/equipment")
 	public ResponseEntity<Map<String, Object>> getAllEquipment(@RequestParam(defaultValue = "0") int page,
 			@RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "name") String sortBy,
@@ -243,7 +226,7 @@ public class AdminController {
 
 	// Get all categories with pagination
 	@GetMapping("/categories")
-	public ResponseEntity<Map<String, Object>> getAllCategories(@RequestParam(defaultValue = "0") int page,
+	public ResponseEntity<Map<String, Object>> getAllCategories(@RequestParam(defaultValue = "1") int page,
 			@RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "name") String sortBy,
 			@RequestParam(defaultValue = "asc") String direction) {
 

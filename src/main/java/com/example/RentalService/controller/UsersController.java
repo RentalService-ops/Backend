@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -35,6 +36,8 @@ public class UsersController {
 	
 	/**
 	 * Injecting UserService and CustomerService dependency using Constructor dependency injection.
+	 * @param service: UserService bean to be injected
+	 * @param customerService: CustomerService bean to be injected.
 	 * */
 	public UsersController(UsersServiceImpl service,CustomerQueryServiceImpl customerService) {
 		this.service=service;
@@ -59,7 +62,7 @@ public class UsersController {
 	 * @Param userDTO: Updated user details provided.
 	 * @return the Users object with updated details.
 	 * */
-	@PostMapping(value={"/updateUser"})
+	@PutMapping(value={"/updateUser"})
 	@PreAuthorize("hasRole('rental') or hasRole('admin') or hasRole('user')")
 	public ResponseEntity<UsersDTO> updateUserbyId(@RequestParam("id") int id, @RequestBody UsersDTO userDTO) {
 		System.out.println(userDTO.getPhoneNo());
