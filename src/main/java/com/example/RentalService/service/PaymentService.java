@@ -7,4 +7,6 @@ import com.razorpay.RazorpayException;
 public interface PaymentService {
     String createOrder(CreatePaymentRequestDTO request) throws RazorpayException;
     String verifyPayment(VerifyPaymentRequestDTO request);
+    String handleFailedPayment(String paymentOrderId);
+    String handleRejectedPayment(String paymentOrderId);
 }

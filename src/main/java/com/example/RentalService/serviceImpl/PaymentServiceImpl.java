@@ -7,9 +7,12 @@ import org.springframework.stereotype.Service;
 
 import com.example.RentalService.DTO.CreatePaymentRequestDTO;
 import com.example.RentalService.DTO.VerifyPaymentRequestDTO;
+import com.example.RentalService.model.BookingStatus;
+import com.example.RentalService.model.Equipment;
 import com.example.RentalService.model.Payment;
 import com.example.RentalService.model.Rental_Bookings;
 import com.example.RentalService.model.Users;
+import com.example.RentalService.repo.EquipmentRepo;
 import com.example.RentalService.repo.PaymentRepository;
 import com.example.RentalService.repo.RentalBookingRepository;
 import com.example.RentalService.repo.UserRepository;
@@ -36,6 +39,7 @@ public class PaymentServiceImpl implements PaymentService {
     private final PaymentRepository paymentRepository;
     private final UserRepository usersRepository;
     private final RentalBookingRepository rentalBookingRepository;
+    private final EquipmentRepo equipmentRepository;
 
     private RazorpayClient getRazorpayClient() throws RazorpayException {
         return new RazorpayClient(keyId, keySecret);
@@ -63,6 +67,9 @@ public class PaymentServiceImpl implements PaymentService {
         Rental_Bookings booking = rentalBookingRepository.findById(request.getBookingId())
                 .orElseThrow(() -> new RuntimeException("Booking not found"));
 
+        booking.setStatus(BookingStatus.COMPLETED);
+        
+        rentalBookingRepository.save(booking);
         // Create Payment entity without payment ID and signature initially
         Payment payment = Payment.builder()
                 .razorpayOrderId(razorOrder.get("id"))
@@ -116,4 +123,29 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
 
+
+	@Override
+	public String handleFailedPayment(String paymentOrderId) {
+		Payment payment=paymentRepository.findByRazorpayOrderId(paymentOrderId);
+		Rental_Bookings booking=payment.getOrder();
+		paymentRepository.deleteById(payment.getId());
+		booking.setStatus(BookingStatus.APPROVED);
+		rentalBookingRepository.save(booking);
+		
+		return "Payment attempt failed.If your payment attempt fails more than two times then the your booking will be rejected automatically.";
+	}
+
+
+	@Override
+	public String handleRejectedPayment(String paymentOrderId) {
+		Payment payment=paymentRepository.findByRazorpayOrderId(paymentOrderId);
+		Rental_Bookings booking=payment.getOrder();
+		booking.setStatus(BookingStatus.REJECTED);
+		Equipment equipment=booking.getEquipment();
+		equipment.setQuantity(equipment.getQuantity()+booking.getEquipment_quantity());
+		equipmentRepository.save(equipment);
+		rentalBookingRepository.save(booking);
+		paymentRepository.deleteById(payment.getId());
+		return "Your payment attempt has failed more than twice so the current booking is rejected. Please re-book your order.";
+	}
 }

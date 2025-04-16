@@ -41,7 +41,7 @@ public class SecurityConfig {
                 .disable()
             )
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/login", "/register", "/api/user/contact", "/ws/**","/verify-otp","/otp","/reset-password", "/api/payments/**").permitAll() // ✅ Allow WebSocket endpoint
+                .requestMatchers("/login", "/register", "/api/user/contact", "/ws/**","/verify-otp","/otp","/reset-password").permitAll() // ✅ Allow WebSocket endpoint
                 .anyRequest().authenticated()
             )
             .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class);//UsernamePasswordAuthentication filter calls the DAO Authentication provider for authentication

@@ -2,7 +2,9 @@ package com.example.RentalService.controller;
 
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/payments")
 @RequiredArgsConstructor
 @CrossOrigin
+@PreAuthorize("hasAnyRole('ROLE_user')")
 public class PaymentController {
 
     private final PaymentService paymentService;
@@ -37,5 +40,15 @@ public class PaymentController {
     public ResponseEntity<String> verifyPayment(@RequestBody VerifyPaymentRequestDTO request) {
         String result = paymentService.verifyPayment(request);
         return ResponseEntity.ok(result);
+    }
+    
+    @PostMapping("/failed-payment/{paymentId}")
+    public ResponseEntity<String> handleFailedPayment(@PathVariable("paymentId") String paymentId){
+    	return ResponseEntity.ok(paymentService.handleFailedPayment(paymentId));
+    }
+    
+    @PostMapping("/reject-payment/{paymentId}")
+    public ResponseEntity<String> handleRejectPayment(@PathVariable("paymentId") String paymentId){
+    	return ResponseEntity.ok(paymentService.handleRejectedPayment(paymentId));
     }
 }
