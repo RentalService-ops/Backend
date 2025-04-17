@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 
+import com.example.RentalService.DTO.AdminBookingsDTO;
 import com.example.RentalService.model.BookingStatus;
 import com.example.RentalService.model.Rental_Bookings;
 
@@ -59,7 +60,7 @@ public interface RentalBookingService {
      */
     ResponseEntity<?> cancelBooking(int bookingId);
     
-	Page<Rental_Bookings> getAllBookings(Pageable pageable);
+    Page<AdminBookingsDTO> getAllBookingsBySearch(String search, Pageable pageable);
 
 	public long countBookingsByRenterUsername(String renterUsername);
 

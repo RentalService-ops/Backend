@@ -21,13 +21,22 @@ import jakarta.servlet.http.HttpServletResponse;
 
 @Component
 public class JwtFilter extends OncePerRequestFilter {
-
+	
+	//Service for validating jwt token.
 	@Autowired
 	private JWTService jwtService;
 	
+	//Context object storing authentication details.
 	@Autowired
      ApplicationContext context;
 	
+	
+	/**
+	 * Extracts JWT token from header and Does JWT token verification.
+	 * @param request the HTTP request containing JWT token
+	 * @param response the HTTP response sent
+	 * @param filterChain the security filter chain for authentication
+	 * */
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {

@@ -24,14 +24,21 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @Configuration
 @EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
-
+	
+	//Service for interacting with User table during authenticating requests for Data verification.
     @Autowired
     private UserDetailsService userDetailsService;
-
+    
+    //Filter to be applied for token authentication.
     @Autowired
     private JwtFilter filter;
 
-
+    /**
+     * Sets filter chain configuration to be applied while authenticating request.
+     * 
+     * @param http Represents security configurations to be applied for authorization and security filters to be applied while authenticating request.
+     * @return Security filter chain to be applied while authenticating request.
+     * */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
