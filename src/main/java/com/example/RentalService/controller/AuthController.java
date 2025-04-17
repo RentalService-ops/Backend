@@ -18,10 +18,7 @@ import com.example.RentalService.service.AuthService;
 
 import jakarta.servlet.http.HttpServletResponse;
 
-/*
- * Controller for managing Authentication and Signup for User, Renter, Admin
- * 
- * **/
+
 @RestController
 @RequestMapping("")
 @CrossOrigin

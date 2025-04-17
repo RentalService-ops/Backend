@@ -21,7 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class GlobalExceptionHandler {
 	
-	@ExceptionHandler(value= {MaxUploadSizeExceededException.class})
+	@ExceptionHandler(value={MaxUploadSizeExceededException.class})
 	public ResponseEntity<?> handleMaxUploadSizeExceededException(HttpServletResponse response, MaxUploadSizeExceededException exception) throws IOException{
 		log.error(exception.getMessage());
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR.value()).body(exception.getMessage());

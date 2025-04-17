@@ -29,7 +29,6 @@ import com.example.RentalService.model.BookingStatus;
 import com.example.RentalService.model.Category;
 import com.example.RentalService.model.CustomerQuery;
 import com.example.RentalService.model.Equipment;
-import com.example.RentalService.model.Rental_Bookings;
 import com.example.RentalService.model.Users;
 import com.example.RentalService.service.CategoryService;
 import com.example.RentalService.service.CustomerQueryService;
@@ -39,21 +38,26 @@ import com.example.RentalService.service.UsersService;
 
 @RestController
 @RequestMapping("/api/admin")
-@PreAuthorize("hasRole('admin')") // Restrict access to admin users only
+@PreAuthorize("hasRole('admin')")
 public class AdminController {
-
+	
+	//Service to perform operations on customerQuery data.
 	@Autowired
 	private CustomerQueryService queryService;
-
+	
+	//Service to perform operations on user data.
 	@Autowired
 	private UsersService userService;
-
+	
+	//Service to perform operations on Equipment data.
 	@Autowired
 	private EquipmentService equipmentService;
-
+	
+	//Service to perform operations on booking data.
 	@Autowired
 	private RentalBookingService rentalBookingService;
-
+	
+	//Service to perform operations on Category data.
 	@Autowired
 	private CategoryService categoryService;
 
@@ -61,7 +65,16 @@ public class AdminController {
 		this.userService = userService;
 	}
 
-	// Get all users with pagination using username
+	/**
+	 * Retrieves a paginated list of all users, optionally filtered by search query.
+	 *
+	 * @param page     page number
+	 * @param size     page size
+	 * @param sortBy   property to sort by
+	 * @param direction sort direction (asc/desc)
+	 * @param search   optional search query
+	 * @return paginated users
+	 */
 	@GetMapping("/users")
 	public ResponseEntity<Map<String, Object>> getAllUsers(@RequestParam(defaultValue = "0") int page,
 			@RequestParam(defaultValue = "04") int size, @RequestParam(defaultValue = "username") String sortBy,
@@ -79,7 +92,12 @@ public class AdminController {
 		return ResponseEntity.ok(response);
 	}
 
-	// Delete user
+	/**
+	 * Deletes a user by ID.
+	 *
+	 * @param id user ID
+	 * @return HTTP 204 if successful, 404 if not found
+	 */
 	@DeleteMapping("/users/{id}")
 	public ResponseEntity<Void> deleteUserById(@PathVariable int id) {
 		Users user = userService.getUserByUserId(id);
@@ -90,7 +108,13 @@ public class AdminController {
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 	}
 
-	// Update user
+	/**
+	 * Updates a user by ID.
+	 *
+	 * @param id      user ID
+	 * @param userDTO updated user data
+	 * @return updated user DTO or 404 if user not found
+	 */
 	@PutMapping("/users/{id}")
 	public ResponseEntity<UsersDTO> updateUserById(@PathVariable int id, @RequestBody UsersDTO userDTO) {
 		Users user = userService.getUserByUserId(id);
@@ -98,19 +122,27 @@ public class AdminController {
 			user.setEmail(userDTO.getEmail());
 			user.setPhoneNumber(userDTO.getPhoneNo());
 			user.setUsername(userDTO.getUsername());
-//            user.setRole(userDTO.valueOf(UsersDTO.getRole()));
 			return ResponseEntity.ok(new UsersDTO(userService.saveUser(user)));
 		}
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 	}
 
-	// Get only unresolved queries
+	/**
+	 * Retrieves all unresolved customer queries.
+	 *
+	 * @return list of unresolved queries
+	 */
 	@GetMapping("/queries/pending")
 	public ResponseEntity<List<CustomerQuery>> getPendingQueries() {
 		return ResponseEntity.ok(queryService.getPendingQueries());
 	}
 
-	// Mark a query as resolved
+	/**
+	 * Marks a customer query as resolved.
+	 *
+	 * @param id query ID
+	 * @return success or error message
+	 */
 	@PutMapping("/queries/{id}/resolve")
 	public ResponseEntity<String> resolveQuery(@PathVariable int id) {
 		boolean updated = queryService.resolveQuery(id);
@@ -121,7 +153,16 @@ public class AdminController {
 		}
 	}
 
-	//  Get all rental equipment
+	/**
+	 * Retrieves paginated list of rental equipment.
+	 *
+	 * @param page     page number
+	 * @param size     page size
+	 * @param sortBy   property to sort by
+	 * @param direction sort direction
+	 * @param search   optional search term
+	 * @return paginated equipment list
+	 */
 	@GetMapping("/equipment")
 	public ResponseEntity<Map<String, Object>> getAllEquipment(@RequestParam(defaultValue = "0") int page,
 			@RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "name") String sortBy,
@@ -146,7 +187,12 @@ public class AdminController {
 		return ResponseEntity.ok(response);
 	}
 
-	// Delete equipment by ID
+	/**
+	 * Deletes equipment by ID.
+	 *
+	 * @param id equipment ID
+	 * @return success or error message
+	 */
 	@DeleteMapping("/equipment/{id}")
 	public ResponseEntity<String> deleteEquipment(@PathVariable int id) {
 		Equipment equipment = equipmentService.getEquipmentById(id);
@@ -157,36 +203,42 @@ public class AdminController {
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Equipment not found.");
 	}
 
+	/**
+	 * Retrieves paginated rental bookings.
+	 *
+	 * @param page     page number
+	 * @param size     page size
+	 * @param sortBy   property to sort by
+	 * @param direction sort direction
+	 * @param search   optional search term
+	 * @return paginated booking data
+	 */
 	@GetMapping("/bookings")
 	public ResponseEntity<Map<String, Object>> getAllBookings(@RequestParam(defaultValue = "0") int page,
 			@RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "startDate") String sortBy,
-			@RequestParam(defaultValue = "desc") String direction, @RequestParam(required = false) String search) {
+			@RequestParam(defaultValue = "desc") String direction, @RequestParam(required = false) String searchBy) {
 
 		Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(direction), sortBy));
-		Page<Rental_Bookings> bookings = rentalBookingService.getAllBookings(pageable);
+		Page<AdminBookingsDTO> bookings = rentalBookingService.getAllBookingsBySearch(searchBy,pageable);
 
-		List<AdminBookingsDTO> bookingDTOs = bookings.getContent().stream().map(booking -> {
-			String renterUsername = booking.getEquipment().getUser().getUsername();
-			long totalBookings = rentalBookingService.countBookingsByRenterUsername(renterUsername);
-			return new AdminBookingsDTO(booking, totalBookings);
-		}).toList();
+		List<AdminBookingsDTO> bookingDTOs = null;
 
 		Map<String, Object> response = new HashMap<>();
 		response.put("content", bookingDTOs);
 		response.put("currentPage", bookings.getNumber());
 		response.put("totalItems", bookings.getTotalElements());
 		response.put("totalPages", bookings.getTotalPages());
-		if (!bookingDTOs.isEmpty()) {
-			System.out.println("Renter Name: " + bookingDTOs.get(0).getRenterName());
-		}
-
-		bookingDTOs.forEach(dto -> System.out
-				.println("Renter: " + dto.getRenterName() + ", Total Bookings: " + dto.getTotalBookingsByRenter()));
-		// System.out.println("Renter Name: " + bookingDTOs.getRenterName());
 
 		return ResponseEntity.ok(response);
 	}
 
+	/**
+	 * Updates the status of a booking.
+	 *
+	 * @param id booking ID
+	 * @param requestBody map containing the new status
+	 * @return success or error message
+	 */
 	@PutMapping("/bookings/{id}")
 	public ResponseEntity<String> updateBookingStatus(@PathVariable int id,
 			@RequestBody Map<String, String> requestBody) {
@@ -204,6 +256,12 @@ public class AdminController {
 		}
 	}
 
+	/**
+	 * Deletes a booking by ID.
+	 *
+	 * @param id booking ID
+	 * @return success or error message
+	 */
 	@DeleteMapping("/bookings/{id}")
 	public ResponseEntity<String> deleteBooking(@PathVariable int id) {
 		boolean deleted = rentalBookingService.deleteBooking(id);
@@ -214,6 +272,12 @@ public class AdminController {
 		}
 	}
 
+	/**
+	 * Adds a new equipment category.
+	 *
+	 * @param categoryDTO the new category data
+	 * @return created category DTO
+	 */
 	@PostMapping("/categories")
 	public ResponseEntity<?> addCategory(@RequestBody CategoryDTO categoryDTO) {
 		Category category = new Category();
@@ -224,7 +288,15 @@ public class AdminController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(new CategoryDTO(savedCategory));
 	}
 
-	// Get all categories with pagination
+	/**
+	 * Retrieves paginated list of equipment categories.
+	 *
+	 * @param page     page number
+	 * @param size     page size
+	 * @param sortBy   property to sort by
+	 * @param direction sort direction
+	 * @return paginated category list
+	 */
 	@GetMapping("/categories")
 	public ResponseEntity<Map<String, Object>> getAllCategories(@RequestParam(defaultValue = "1") int page,
 			@RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "name") String sortBy,
@@ -242,7 +314,12 @@ public class AdminController {
 		return ResponseEntity.ok(response);
 	}
 
-	// Delete category by ID
+	/**
+	 * Deletes a category by ID.
+	 *
+	 * @param id category ID
+	 * @return success or error message
+	 */
 	@DeleteMapping("/categories/{id}")
 	public ResponseEntity<String> deleteCategory(@PathVariable int id) {
 		ResponseEntity<?> response = categoryService.deleteCategory(id);

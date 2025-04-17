@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
 
+import com.example.RentalService.DTO.AdminBookingsDTO;
 import com.example.RentalService.DTO.NotificationDTO;
 import com.example.RentalService.DTO.RentalBookingsDTO;
 import com.example.RentalService.model.BookingStatus;
@@ -202,11 +203,6 @@ public class RentalBookingServiceImpl implements RentalBookingService{
         
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Booking not found.");
     }
-    
-    @Override
-	public Page<Rental_Bookings> getAllBookings(Pageable pageable) {
-		return rentalRepo.findAll(pageable);
-	}
 
 
 	@Override
@@ -237,5 +233,22 @@ public class RentalBookingServiceImpl implements RentalBookingService{
 			return true;
 		}
 		return false;
+	}
+
+
+	@Override
+	public Page<AdminBookingsDTO> getAllBookingsBySearch(String search, Pageable pageable) {
+		Page<Object[]> bookings=null;
+		if(search.equals("User")){
+			bookings=rentalRepo.findBookingBySearchUser(pageable);
+		}
+		else if(search.equals("Renter")) {
+			bookings=rentalRepo.findBookingBySearchRenter(pageable);
+		}
+		else if(search.equals("Equipment")) {
+			bookings=rentalRepo.findBookingBySearchEquipment(pageable);
+		}
+		System.out.println(bookings);
+		return null;
 	}
 }
