@@ -1,11 +1,17 @@
 package com.example.RentalService.serviceImpl;
 
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.example.RentalService.DTO.CreatePaymentRequestDTO;
+import com.example.RentalService.DTO.PaymentResponseDTO;
 import com.example.RentalService.DTO.VerifyPaymentRequestDTO;
 import com.example.RentalService.model.BookingStatus;
 import com.example.RentalService.model.Equipment;
@@ -142,10 +148,32 @@ public class PaymentServiceImpl implements PaymentService {
 		Rental_Bookings booking=payment.getOrder();
 		booking.setStatus(BookingStatus.REJECTED);
 		Equipment equipment=booking.getEquipment();
-		equipment.setQuantity(equipment.getQuantity()+booking.getEquipment_quantity());
+		equipment.setQuantity(equipment.getQuantity()+booking.getEquipmentQuantity());
 		equipmentRepository.save(equipment);
 		rentalBookingRepository.save(booking);
 		paymentRepository.deleteById(payment.getId());
 		return "Your payment attempt has failed more than twice so the current booking is rejected. Please re-book your order.";
 	}
+	
+	@Override
+	public ResponseEntity<?> getPaymentByUserId(int id) {
+	    List<PaymentResponseDTO> payments = paymentRepository.findAll()
+	        .stream()
+	        .filter(pay -> pay.getUser().getId() == id)
+	        .map(pay -> new PaymentResponseDTO(
+	                pay.getAmount(),
+	                pay.getPaymentDate(),
+	                pay.getRazorpayPaymentId(),
+	                pay.getStatus(),
+	                pay.getOrder().getEquipment().getName()
+	        ))
+	        .collect(Collectors.toList());
+
+	    if (payments.isEmpty()) {
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No payments found for user ID: " + id);
+	    }
+
+	    return ResponseEntity.ok(payments);
+	}
+
 }

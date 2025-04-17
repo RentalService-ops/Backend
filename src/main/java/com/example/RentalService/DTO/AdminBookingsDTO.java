@@ -32,10 +32,10 @@ public class AdminBookingsDTO {
 	}
 	
 	public AdminBookingsDTO(Rental_Bookings booking){
-		this.bookingId=booking.getId();
+		this.bookingId=booking.getBookingId();
 		this.userName=booking.getUser().getUsername();
 		this.equipmentName=booking.getEquipment().getName();
-		this.equipmentQuantity=booking.getEquipment_quantity();
+		this.equipmentQuantity=booking.getEquipmentQuantity();
 		this.startDate=booking.getStartDate();
 		this.endDate=booking.getEndDate();
 		this.status=booking.getStatus();
@@ -43,11 +43,11 @@ public class AdminBookingsDTO {
 	}
 	
 	public AdminBookingsDTO(Rental_Bookings booking, long totalBookings) {
-		this.bookingId = booking.getId();
+		this.bookingId = booking.getBookingId();
 		this.userName = booking.getUser().getUsername();
 		this.renterName = booking.getEquipment().getUser().getUsername();
 		this.equipmentName = booking.getEquipment().getName();
-		this.equipmentQuantity = booking.getEquipment_quantity();
+		this.equipmentQuantity = booking.getEquipmentQuantity();
 		this.startDate = booking.getStartDate();
 		this.endDate = booking.getEndDate();
 		this.status = booking.getStatus();

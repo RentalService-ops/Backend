@@ -65,7 +65,6 @@ public class UsersController {
 	@PutMapping(value={"/updateUser"})
 	@PreAuthorize("hasRole('rental') or hasRole('admin') or hasRole('user')")
 	public ResponseEntity<UsersDTO> updateUserbyId(@RequestParam("id") int id, @RequestBody UsersDTO userDTO) {
-		System.out.println(userDTO.getPhoneNo());
 		Users user=service.getUserByUserId(id);
 		user.setEmail(userDTO.getEmail());
 		user.setPhoneNumber(userDTO.getPhoneNo());

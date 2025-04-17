@@ -28,10 +28,10 @@ public class RentalBookingsDTO {
 	}
 	
 	public RentalBookingsDTO(Rental_Bookings booking){
-		this.bookingId=booking.getId();
+		this.bookingId=booking.getBookingId();
 		this.userName=booking.getUser().getUsername();
 		this.equipmentName=booking.getEquipment().getName();
-		this.equipmentQuantity=booking.getEquipment_quantity();
+		this.equipmentQuantity=booking.getEquipmentQuantity();
 		this.startDate=booking.getStartDate();
 		this.endDate=booking.getEndDate();
 		this.status=booking.getStatus();

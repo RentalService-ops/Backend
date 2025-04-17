@@ -65,7 +65,7 @@ public class RentalBookingServiceImpl implements RentalBookingService{
 	    String msg = "Your booking of " + equipment.getName() + " has been rejected.";
 	    int userId = booking.getUser().getId();
 	    
-	    if(equipment.getQuantity() < booking.getEquipment_quantity()) {
+	    if(equipment.getQuantity() < booking.getEquipmentQuantity()) {
 	    	msg="Booking rejected due to insufficient quantity available.";
 	    }
 
@@ -93,10 +93,10 @@ public class RentalBookingServiceImpl implements RentalBookingService{
 	    Equipment equipment = equipmentRepo.findById(booking.getEquipment().getEquipmentId())
 	            .orElseThrow();
 	    
-	    if(equipment.getQuantity() < booking.getEquipment_quantity()) {
+	    if(equipment.getQuantity() < booking.getEquipmentQuantity()) {
 	    	return rejectBooking(id);
 	    }
-	    equipment.setQuantity(equipment.getQuantity() - booking.getEquipment_quantity());
+	    equipment.setQuantity(equipment.getQuantity() - booking.getEquipmentQuantity());
 	    equipmentRepo.save(equipment);
 	    
 	    booking.setStatus(BookingStatus.APPROVED);

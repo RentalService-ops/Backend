@@ -15,186 +15,51 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Getter
+@Setter
 public class Rental_Bookings {
 
-    // Property to store the unique booking ID
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
-    private int booking_id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int bookingId;
 
-    // Property to store the user who made the booking
-    @ManyToOne(fetch=FetchType.EAGER, optional=false)
-    @JoinColumn(name="user_id", nullable=false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private Users user;
 
-    // Property to store the renter associated with the booking
-    @ManyToOne(fetch=FetchType.EAGER, optional=false)
-    @JoinColumn(name="rental_id", nullable=false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "rental_id", nullable = false)
     private Users renter;
 
-    // Property to store the equipment being booked
-    @ManyToOne(fetch=FetchType.EAGER, optional=false)
-    @JoinColumn(name="equipment_id",nullable=false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "equipment_id", nullable = false)
     private Equipment equipment;
-    
+
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "address_id", referencedColumnName = "id", nullable = false)
-    private Address address; // Address for delivery or pickup
+    private Address address;
 
-    // Property to store the quantity of equipment being booked
-    @Column(nullable=false)
-    private int equipment_quantity;
-    
+    @Column(nullable = false)
+    private int equipmentQuantity;
+
     @Column(nullable = false)
     private LocalDate startDate;
 
     @Column(nullable = false)
     private LocalDate endDate;
-    
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private BookingStatus status;
-    
-    @Column(name="total_price")
+
+    @Column(name = "total_price")
     private BigDecimal totalPrice;
-   
-
-
-    // Getters and Setters
-
-    /**
-     * Gets the quantity of equipment being booked.
-     * 
-     * @return the quantity of the equipment in the booking.
-     */
-    public int getEquipment_quantity() {
-        return equipment_quantity;
-    }
-
-    /**
-     * Sets the quantity of equipment being booked.
-     * 
-     * @param equipment_quantity the quantity to be set for the equipment in the booking.
-     */
-    public void setEquipment_quantity(int equipment_quantity) {
-        this.equipment_quantity = equipment_quantity;
-    }
-
-    /**
-     * Gets the unique booking ID for this rental booking.
-     * 
-     * @return the booking ID.
-     */
-    public int getId() {
-        return this.booking_id;
-    }
-
-    /**
-     * Gets the user ID of the person who made the booking.
-     * 
-     * @return the user ID of the user who made the booking.
-     */
-    public Users getUser() {
-        return this.user;
-    }
-
-    /**
-     * Sets the user associated with this booking.
-     * 
-     * @param user the user to be set for the booking.
-     */
-    public void setUser(Users user) {
-        this.user = user;
-    }
-
-    /**
-     * Gets the renter ID associated with this booking.
-     * 
-     * @return the renter ID.
-     */
-    public Users getRenter() {
-        return this.renter;
-    }
-
-    /**
-     * Sets the renter associated with this booking.
-     * 
-     * @param renter the renter to be set for the booking.
-     */
-    public void setRenter(Users renter) {
-        this.renter = renter;
-    }
-    
-    /**
-     * Sets the equipment associated with this booking.
-     * @param equipment: the equipment to be set with this booking.
-     * */
-    public void setEquipment(Equipment equipment) {
-    	
-    	this.equipment=equipment;
-    }
-    
-    /**
-     * @return the corresponding ID of the equipment associated with corresponding Rental booking.
-     * */
-    public Equipment getEquipment() {
-    	return this.equipment;
-    }
-    
-    public LocalDate getStartDate() {
-        return startDate;
-    }
-
-    public void setStartDate(LocalDate startDate) {
-        this.startDate = startDate;
-    }
-
-    public LocalDate getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(LocalDate endDate) {
-        this.endDate = endDate;
-    }
-    
-    public BookingStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(BookingStatus status) {
-        this.status = status;
-    }
-    
-
-    public Address getAddress() {
-        return address;
-    }
-
-    public void setAddress(Address address) {
-        this.address = address;
-    }
-
-	public int getBooking_id() {
-		return booking_id;
-	}
-
-	public void setBooking_id(int booking_id) {
-		this.booking_id = booking_id;
-	}
-
-	public BigDecimal getTotalPrice() {
-		return totalPrice;
-	}
-
-	public void setTotalPrice(BigDecimal totalPrice) {
-		this.totalPrice = totalPrice;
-	}
-    
-    
 }
