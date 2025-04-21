@@ -13,7 +13,7 @@ public interface UsersService {
      * 
      * @param id the ID of the user to retrieve
      * @return the user object with the given user ID
-     * @throws UserNotFoundException if user with specified id is not found.
+     * @throws UserNotFoundException if the user with the specified ID is not found
      */
     Users getUserByUserId(int id) throws UserNotFoundException;
 
@@ -24,15 +24,37 @@ public interface UsersService {
      * @return the saved user object
      */
     Users saveUser(Users user);
-    
-	// pagination method
-	public Page<Users> getAllUsers(Pageable pageable);
 
-	public Page<Users> getAllUsers(String search, Pageable pageable);
+    /**
+     * Retrieves a paginated list of all users.
+     * 
+     * @param pageable the pagination and sorting information
+     * @return a paginated list of users
+     */
+    Page<Users> getAllUsers(Pageable pageable);
 
-	// Delete User
-	public void deleteUser(int id);
+    /**
+     * Retrieves a paginated list of users based on a search query.
+     * 
+     * @param search the keyword to search users by (e.g., name or email)
+     * @param pageable the pagination and sorting information
+     * @return a paginated list of users matching the search criteria
+     */
+    Page<Users> getAllUsers(String search, Pageable pageable);
 
-	// Update User
-	public Users updateUser(int id, Users updatedUser);
+    /**
+     * Deletes a user by their ID.
+     * 
+     * @param id the ID of the user to delete
+     */
+    void deleteUser(int id);
+
+    /**
+     * Updates an existing user's details.
+     * 
+     * @param id the ID of the user to update
+     * @param updatedUser the user object containing updated details
+     * @return the updated user object
+     */
+    Users updateUser(int id, Users updatedUser);
 }

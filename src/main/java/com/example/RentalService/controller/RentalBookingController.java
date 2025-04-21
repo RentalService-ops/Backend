@@ -20,26 +20,33 @@ import com.example.RentalService.DTO.RentalBookingsDTO;
 import com.example.RentalService.model.Rental_Bookings;
 import com.example.RentalService.service.RentalBookingService;
 
+/**
+ * Controller for handling equipment rental bookings.
+ */
 @RestController
 @RequestMapping("/api/bookings")
 public class RentalBookingController {
-	
-	@Autowired
-	RentalBookingService service;
-	
-	
-	 /**
-     * Book equipment.
+    
+    @Autowired
+    RentalBookingService service;
+
+    /**
+     * Books equipment for the authenticated user.
+     *
+     * @param booking the rental booking details
+     * @return ResponseEntity with the booking confirmation or error message
      */
     @PreAuthorize("hasAnyRole('ROLE_user')")
     @PostMapping("/equipmentBooking")
     public ResponseEntity<?> bookEquipment(@RequestBody Rental_Bookings booking) {
-
         return service.equipmentBooking(booking);
     }
-    
+
     /**
-     * Get booking details by user ID.
+     * Retrieves all booking details for a specific user.
+     *
+     * @param userId the ID of the user
+     * @return ResponseEntity containing a list of bookings for the user
      */
     @PreAuthorize("hasAnyRole('ROLE_user')")
     @GetMapping("/bookingDetails/{userId}")
@@ -48,32 +55,52 @@ public class RentalBookingController {
     }
 
     /**
-     * Cancel a booking by ID.
+     * Cancels a booking by its ID if allowed.
+     *
+     * @param bookingId the ID of the booking to cancel
+     * @return ResponseEntity with the status of the cancellation
      */
     @PreAuthorize("hasAnyRole('ROLE_user')")
     @PutMapping("/cancelBooking/{bookingId}")
     public ResponseEntity<?> cancelBooking(@PathVariable int bookingId) {
         return service.cancelBooking(bookingId);
     }
-    
-	
-	@GetMapping("/getBookings")
-	@PreAuthorize("hasRole('rental') or hasRole('admin')")
-	public ResponseEntity<List<RentalBookingsDTO>> getAllBookingsByRentalId(@RequestParam("id") int id){
-		return ResponseEntity.ok(service.findByRentalId(id).stream()
-				.map(RentalBooking->new RentalBookingsDTO(RentalBooking))
-				.collect(Collectors.toList()));
-	}
-	
-	@PatchMapping("/approve/{id}")
-	@PreAuthorize("hasRole('rental')")
-	public ResponseEntity<RentalBookingsDTO> approveBooking(@PathVariable int id) {
-		return ResponseEntity.ok(new RentalBookingsDTO(service.approveBooking(id)));
-	}
-	
-	@PatchMapping("/reject/{id}")
-	@PreAuthorize("hasRole('rental')")
-	public ResponseEntity<RentalBookingsDTO> rejectBooking(@PathVariable int id) {
-		return ResponseEntity.ok(new RentalBookingsDTO(service.rejectBooking(id)));
-	}
+
+    /**
+     * Retrieves all bookings by rental ID (for owners).
+     *
+     * @param id the rental user's ID
+     * @return list of rental bookings for the given rental ID
+     */
+    @GetMapping("/getBookings")
+    @PreAuthorize("hasRole('rental') or hasRole('admin')")
+    public ResponseEntity<List<RentalBookingsDTO>> getAllBookingsByRentalId(@RequestParam("id") int id) {
+        return ResponseEntity.ok(service.findByRentalId(id).stream()
+                .map(RentalBooking -> new RentalBookingsDTO(RentalBooking))
+                .collect(Collectors.toList()));
+    }
+
+    /**
+     * Approves a booking by its ID.
+     *
+     * @param id the ID of the booking to approve
+     * @return approved booking wrapped in RentalBookingsDTO
+     */
+    @PatchMapping("/approve/{id}")
+    @PreAuthorize("hasRole('rental')")
+    public ResponseEntity<RentalBookingsDTO> approveBooking(@PathVariable int id) {
+        return ResponseEntity.ok(new RentalBookingsDTO(service.approveBooking(id)));
+    }
+
+    /**
+     * Rejects a booking by its ID.
+     *
+     * @param id the ID of the booking to reject
+     * @return rejected booking wrapped in RentalBookingsDTO
+     */
+    @PatchMapping("/reject/{id}")
+    @PreAuthorize("hasRole('rental')")
+    public ResponseEntity<RentalBookingsDTO> rejectBooking(@PathVariable int id) {
+        return ResponseEntity.ok(new RentalBookingsDTO(service.rejectBooking(id)));
+    }
 }

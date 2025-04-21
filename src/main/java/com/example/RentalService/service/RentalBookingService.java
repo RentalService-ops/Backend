@@ -59,12 +59,38 @@ public interface RentalBookingService {
      * @return a ResponseEntity containing the status of the cancellation
      */
     ResponseEntity<?> cancelBooking(int bookingId);
-    
+
+    /**
+     * Search and paginate all bookings for admin view.
+     * 
+     * @param search the search keyword (e.g., by username, booking ID)
+     * @param pageable pagination information (page number, size, sort)
+     * @return a paginated list of bookings matching the search criteria
+     */
     Page<AdminBookingsDTO> getAllBookingsBySearch(String search, Pageable pageable);
 
-	public long countBookingsByRenterUsername(String renterUsername);
+    /**
+     * Count the total number of bookings associated with a specific renter.
+     * 
+     * @param renterUsername the username of the renter
+     * @return the count of bookings
+     */
+    long countBookingsByRenterUsername(String renterUsername);
 
-	boolean updateBookingStatus(int id, BookingStatus valueOf);
+    /**
+     * Update the status of a booking.
+     * 
+     * @param id the ID of the booking
+     * @param valueOf the new booking status
+     * @return true if the update was successful, false otherwise
+     */
+    boolean updateBookingStatus(int id, BookingStatus valueOf);
 
-	boolean deleteBooking(int id);
+    /**
+     * Delete a booking by its ID.
+     * 
+     * @param id the ID of the booking to delete
+     * @return true if the deletion was successful, false otherwise
+     */
+    boolean deleteBooking(int id);
 }
