@@ -1,12 +1,14 @@
 package com.example.RentalService.serviceImpl;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -237,8 +239,9 @@ public class RentalBookingServiceImpl implements RentalBookingService{
 
 
 	@Override
-	public Page<AdminBookingsDTO> getAllBookingsBySearch(String search, Pageable pageable) {
-		Page<Object[]> bookings=null;
+	public Page<AdminBookingsDTO> getAllBookingsBySearch(String searchBy, Pageable pageable) {
+		List<Object[]> bookings = new ArrayList<Object[]>();
+		String search= searchBy !=null ? searchBy : "Renter";
 		if(search.equals("User")){
 			bookings=rentalRepo.findBookingBySearchUser(pageable);
 		}
@@ -248,7 +251,28 @@ public class RentalBookingServiceImpl implements RentalBookingService{
 		else if(search.equals("Equipment")) {
 			bookings=rentalRepo.findBookingBySearchEquipment(pageable);
 		}
-		System.out.println(bookings);
-		return null;
+		Page<AdminBookingsDTO> bookingsDTO = new PageImpl<>(
+			    bookings.stream()
+			        .map(booking -> new AdminBookingsDTO(
+			             getName(((Number) booking[0]).intValue(),search),
+			            ((Number) booking[1])!= null ? ((Number) booking[1]).intValue() : 0,
+	            		((Number) booking[2])!= null ? ((Number) booking[2]).intValue() : 0,
+        				((Number) booking[3])!= null ? ((Number) booking[3]).intValue() : 0,
+						((Number) booking[4])!= null ? ((Number) booking[4]).intValue() : 0,
+						((Number) booking[5])!= null ? ((Number) booking[5]).intValue() : 0,
+						((Number) booking[6])!= null ? ((Number) booking[6]).intValue() : 0
+			        ))
+			        .collect(Collectors.toList())
+			);
+
+
+		return bookingsDTO;
+	}
+	
+	private String getName(int id,String searchBy) {
+		if(searchBy.equals("Equipment")) {
+			return equipmentRepo.findById(id).get().getName();
+		}
+		return userRepositry.findById(id).get().getUsername();
 	}
 }

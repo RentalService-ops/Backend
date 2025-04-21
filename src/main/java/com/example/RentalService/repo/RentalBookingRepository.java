@@ -2,7 +2,6 @@ package com.example.RentalService.repo;
 
 import java.util.List;
 
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -17,7 +16,7 @@ public interface RentalBookingRepository extends JpaRepository<Rental_Bookings,I
 	List<Rental_Bookings> findByUser_Id(int userId);
 	long countByEquipment_User_Username(String renterUsername);
 	
-	@Query(value="select count(rental_id)\r\n"
+	@Query(value="select rental_id, count(rental_id)\r\n"
 			+ ",(select count(*) from rental_bookings rb1\r\n"
 			+ " where rb1.rental_id=rb.rental_id\r\n"
 			+ " group by status having status=\"COMPLETED\"\r\n"
@@ -37,10 +36,10 @@ public interface RentalBookingRepository extends JpaRepository<Rental_Bookings,I
 			+ "(select count(*) from rental_bookings rb1\r\n"
 			+ " where rb1.rental_id=rb.rental_id\r\n"
 			+ " group by status having status=\"PENDING\"\r\n"
-			+ ") as pendingBookings,rental_id from rental_bookings rb group by rental_id",nativeQuery=true)
-	Page<Object[]> findBookingBySearchRenter(Pageable pageable);
+			+ ") as pendingBookings from rental_bookings rb group by rental_id",nativeQuery=true)
+	List<Object[]> findBookingBySearchRenter(Pageable pageable);
 	
-	@Query(value="select count(user_id)\r\n"
+	@Query(value="select user_id,count(user_id)\r\n"
 			+ ",(select count(*) from rental_bookings rb1\r\n"
 			+ " where rb1.user_id=rb.user_id\r\n"
 			+ " group by status having status=\"COMPLETED\"\r\n"
@@ -60,10 +59,10 @@ public interface RentalBookingRepository extends JpaRepository<Rental_Bookings,I
 			+ "(select count(*) from rental_bookings rb1\r\n"
 			+ " where rb1.user_id=rb.user_id\r\n"
 			+ " group by status having status=\"PENDING\"\r\n"
-			+ ") as pendingBookings,rental_id from rental_bookings rb group by user_id",nativeQuery=true)
-	Page<Object[]> findBookingBySearchUser(Pageable pageable);
+			+ ") as pendingBookings from rental_bookings rb group by user_id",nativeQuery=true)
+	List<Object[]> findBookingBySearchUser(Pageable pageable);
 	
-	@Query(value="select count(equipment_id)\r\n"
+	@Query(value="select equipment_id,count(equipment_id)\r\n"
 			+ ",(select count(*) from rental_bookings rb1\r\n"
 			+ " where rb1.equipment_id=rb.equipment_id\r\n"
 			+ " group by status having status=\"COMPLETED\"\r\n"
@@ -83,6 +82,6 @@ public interface RentalBookingRepository extends JpaRepository<Rental_Bookings,I
 			+ "(select count(*) from rental_bookings rb1\r\n"
 			+ " where rb1.equipment_id=rb.equipment_id\r\n"
 			+ " group by status having status=\"PENDING\"\r\n"
-			+ ") as pendingBookings,rental_id from rental_bookings rb group by equipment_id",nativeQuery=true)
-	Page<Object[]> findBookingBySearchEquipment(Pageable pageable);
+			+ ") as pendingBookings from rental_bookings rb group by equipment_id",nativeQuery=true)
+	List<Object[]> findBookingBySearchEquipment(Pageable pageable);
 }

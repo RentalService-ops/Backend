@@ -215,16 +215,14 @@ public class AdminController {
 	 */
 	@GetMapping("/bookings")
 	public ResponseEntity<Map<String, Object>> getAllBookings(@RequestParam(defaultValue = "0") int page,
-			@RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "startDate") String sortBy,
+			@RequestParam(defaultValue = "10") int size,
 			@RequestParam(defaultValue = "desc") String direction, @RequestParam(required = false) String searchBy) {
 
-		Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(direction), sortBy));
+		Pageable pageable = PageRequest.of(page, size);
 		Page<AdminBookingsDTO> bookings = rentalBookingService.getAllBookingsBySearch(searchBy,pageable);
 
-		List<AdminBookingsDTO> bookingDTOs = null;
-
 		Map<String, Object> response = new HashMap<>();
-		response.put("content", bookingDTOs);
+		response.put("content", bookings);
 		response.put("currentPage", bookings.getNumber());
 		response.put("totalItems", bookings.getTotalElements());
 		response.put("totalPages", bookings.getTotalPages());
