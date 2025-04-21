@@ -10,10 +10,27 @@ import org.springframework.data.repository.query.Param;
 
 import com.example.RentalService.model.Users;
 
+/**
+ * Repository interface for Users entity.
+ * Provides methods for CRUD operations on Users and custom query methods for searching users by email and username.
+ */
 public interface UserRepository extends JpaRepository<Users, Integer> {
 
-	Optional<Users> findByEmail(String email);
-	 
-	@Query("SELECT u FROM Users u WHERE LOWER(u.username) LIKE LOWER(CONCAT('%', :search, '%'))")
+    /**
+     * Finds a user by their email address.
+     *
+     * @param email the email of the user
+     * @return an Optional containing the user if found, otherwise empty
+     */
+    Optional<Users> findByEmail(String email);
+
+    /**
+     * Searches for users whose usernames match a given search term (case-insensitive).
+     *
+     * @param search the search term for the username
+     * @param pageable pagination configuration
+     * @return a Page of users whose usernames contain the search term
+     */
+    @Query("SELECT u FROM Users u WHERE LOWER(u.username) LIKE LOWER(CONCAT('%', :search, '%'))")
     Page<Users> searchByUsername(@Param("search") String search, Pageable pageable);
 }

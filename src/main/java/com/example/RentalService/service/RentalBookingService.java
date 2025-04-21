@@ -95,5 +95,10 @@ public interface RentalBookingService {
      */
     boolean deleteBooking(int id);
     
+    /**
+     * Endpoint to retrieve all booking details for an admin.
+     * 
+     * @return ResponseEntity with status and booking data.
+     */
     ResponseEntity<Map<String, Object>> getAllBookingByAdmin();
 }

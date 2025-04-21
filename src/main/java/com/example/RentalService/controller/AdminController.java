@@ -183,7 +183,6 @@ public class AdminController {
 		response.put("totalItems", equipmentPage.getTotalElements());
 		response.put("totalPages", equipmentPage.getTotalPages());
 
-		System.out.println("Fetching equipment");
 		return ResponseEntity.ok(response);
 	}
 
