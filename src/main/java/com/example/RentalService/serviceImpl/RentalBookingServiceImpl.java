@@ -74,7 +74,6 @@ public class RentalBookingServiceImpl implements RentalBookingService{
 	    	msg="Booking rejected due to insufficient quantity available.";
 	    }
 
-	    // Save to database
 	    Notification notificationEntity = Notification.builder()
 	            .message(msg)
 	            .userId(userId)
@@ -82,7 +81,6 @@ public class RentalBookingServiceImpl implements RentalBookingService{
 	            .build();
 	    notificationRepository.save(notificationEntity);
 
-	    // Send WebSocket notification
 	    NotificationDTO notificationDTO = new NotificationDTO(msg);
 	    messagingTemplate.convertAndSend("/topic/booking/" + userId, notificationDTO);
 

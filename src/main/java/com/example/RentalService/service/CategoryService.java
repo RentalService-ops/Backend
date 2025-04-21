@@ -56,6 +56,11 @@ public interface CategoryService {
      */
     ResponseEntity<?> getCategoryByUserId(int id) throws IllegalArgumentException;
     
+    /**
+     * Retrieves all categories present in the database.
+     * @param pageable pagination configuration
+     * @return Fetched category data from database.
+     * */
 	Page<Category> getAllCategories(Pageable pageable);
 }
 

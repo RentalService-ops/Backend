@@ -12,11 +12,18 @@ public interface CustomerQueryService {
 	 * @param query the query details of the customer.
 	 * */
 	void saveQuery(CustomerQuery query);
-
-	// Get only unresolved queries
+	
+	
+	/**
+	 * @return list of pending queries.
+	 * */
 	public List<CustomerQuery> getPendingQueries();
 
-	// Mark a query as resolved
+	/**
+	 * Marks a query as resolved.
+	 * @param id id of the query to be marked as resolved.
+	 * @return true if query is present and resolved otherwise false.
+	 * */
 	public boolean resolveQuery(int id);
 
 }

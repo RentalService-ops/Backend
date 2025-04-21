@@ -9,12 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import com.example.RentalService.model.Rental_Bookings;
 
-/**
- * Repository interface for Rental_Bookings entity.
- * Provides methods to perform CRUD operations and custom queries 
- * for retrieving rental booking data based on different filters like 
- * user, renter, and equipment, including booking status aggregation.
- */
+
 @Repository
 public interface RentalBookingRepository extends JpaRepository<Rental_Bookings, Integer> {
 

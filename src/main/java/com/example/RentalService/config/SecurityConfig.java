@@ -57,7 +57,10 @@ public class SecurityConfig {
     }
 
 
-    // Define CORS configuration source
+    /**
+     * Creates CORS configuration bean required for processing incoming requests.
+     * @return CorsConfigurationSource object with required CORS configuration.
+     * */
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
@@ -69,7 +72,11 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", config);
         return source;
     }
-
+    
+    /**
+     * Creates the Authentication Provider bean for authenticating requests.
+     * @return AuthenticationProvider object to be used by the security filter chain for authenticating requests.
+     * */
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
@@ -77,7 +84,11 @@ public class SecurityConfig {
         provider.setPasswordEncoder(new BCryptPasswordEncoder(12));
         return provider;
     }
-
+    
+    /**
+     * Creates AuthenticationManager bean for authenticating requests and delegating authentication to specific Authentication providers.
+     * @return AuthenticationManager object.
+     * */
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();

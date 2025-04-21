@@ -10,10 +10,7 @@ import org.springframework.data.repository.query.Param;
 
 import com.example.RentalService.model.Users;
 
-/**
- * Repository interface for Users entity.
- * Provides methods for CRUD operations on Users and custom query methods for searching users by email and username.
- */
+
 public interface UserRepository extends JpaRepository<Users, Integer> {
 
     /**

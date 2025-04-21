@@ -7,10 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import com.example.RentalService.model.CustomerQuery;
 
-/**
- * Repository interface for CustomerQuery entity.
- * Provides CRUD operations and custom query methods for handling customer queries.
- */
+
 @Repository
 public interface CustomerQueryRepository extends JpaRepository<CustomerQuery, Integer> {
 

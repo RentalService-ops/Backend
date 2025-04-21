@@ -1,11 +1,13 @@
 package com.example.RentalService.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -24,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.RentalService.DTO.AdminBookingsDTO;
 import com.example.RentalService.DTO.CategoryDTO;
+import com.example.RentalService.DTO.EquipmentDTO;
 import com.example.RentalService.DTO.UsersDTO;
 import com.example.RentalService.model.BookingStatus;
 import com.example.RentalService.model.Category;
@@ -176,30 +179,23 @@ public class AdminController {
 		} else {
 			equipmentPage = equipmentService.getAllEquipment(pageable);
 		}
-
+		
+		List<EquipmentDTO> equipments=new ArrayList<>();
+		
+		for(Equipment equipment: equipmentPage) {
+			if(equipment.isActive() && equipment.getCategory()!=null) {
+				equipments.add(new EquipmentDTO(equipment));
+			}
+		}
+		
+		Page<EquipmentDTO> equipmentDTOPage=new PageImpl<>(equipments);
 		Map<String, Object> response = new HashMap<>();
-		response.put("content", equipmentPage.getContent());
-		response.put("currentPage", equipmentPage.getNumber());
-		response.put("totalItems", equipmentPage.getTotalElements());
-		response.put("totalPages", equipmentPage.getTotalPages());
+		response.put("content", equipmentDTOPage.getContent());
+		response.put("currentPage", equipmentDTOPage.getNumber());
+		response.put("totalItems", equipmentDTOPage.getTotalElements());
+		response.put("totalPages", equipmentDTOPage.getTotalPages());
 
 		return ResponseEntity.ok(response);
-	}
-
-	/**
-	 * Deletes equipment by ID.
-	 *
-	 * @param id equipment ID
-	 * @return success or error message
-	 */
-	@DeleteMapping("/equipment/{id}")
-	public ResponseEntity<String> deleteEquipment(@PathVariable int id) {
-		Equipment equipment = equipmentService.getEquipmentById(id);
-		if (equipment != null) {
-			equipmentService.deleteEquipment(id);
-			return ResponseEntity.ok("Equipment deleted successfully.");
-		}
-		return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Equipment not found.");
 	}
 
 	/**

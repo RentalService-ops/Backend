@@ -8,10 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.example.RentalService.model.Equipment;
 
-/**
- * Repository interface for Equipment entity.
- * Provides CRUD operations and custom query methods related to equipment listings.
- */
+
 public interface EquipmentRepo extends JpaRepository<Equipment, Integer> {
 
     /**

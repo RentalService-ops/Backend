@@ -4,10 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.example.RentalService.model.Payment;
 
-/**
- * Repository interface for Payment entity.
- * Provides CRUD operations and custom query methods for managing payment transactions.
- */
+
 public interface PaymentRepository extends JpaRepository<Payment, Integer> {
 
     /**

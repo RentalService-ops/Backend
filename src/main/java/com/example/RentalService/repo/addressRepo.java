@@ -6,10 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.example.RentalService.model.Address;
 
-/**
- * Repository interface for Address entity.
- * Provides basic CRUD operations and custom query methods.
- */
+
 public interface addressRepo extends JpaRepository<Address, Integer> {
 
     /**

@@ -6,10 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.example.RentalService.model.Notification;
 
-/**
- * Repository interface for Notification entity.
- * Provides CRUD operations and custom query methods related to user notifications.
- */
+
 public interface NotificationRepository extends JpaRepository<Notification, Long> {
 
     /**

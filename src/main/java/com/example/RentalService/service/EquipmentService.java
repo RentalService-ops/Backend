@@ -13,6 +13,8 @@ import com.example.RentalService.Exceptions.ImageUnsupportedException;
 import com.example.RentalService.Exceptions.UserNotFoundException;
 import com.example.RentalService.model.Equipment;
 
+import jakarta.persistence.EntityNotFoundException;
+
 public interface EquipmentService {
 
     /**
@@ -63,9 +65,32 @@ public interface EquipmentService {
      */
     void deleteEquipment(int id) throws IllegalArgumentException;
     
-	Page<Equipment> searchEquipmentByName(String search, Pageable pageable);
+    /**
+     * Searches for equipment entities whose names match the given search term.
+     *
+     * @param search   the name or partial name to search for
+     * @param pageable the pagination and sorting information
+     * @return a paginated list of equipment matching the search term
+     * @throws IllegalArgumentException if the search term is null or pageable is invalid
+     */
+    Page<Equipment> searchEquipmentByName(String search, Pageable pageable);
 
-	Page<Equipment> getAllEquipment(Pageable pageable);
+    /**
+     * Retrieves all equipment entities with pagination support.
+     *
+     * @param pageable the pagination and sorting information
+     * @return a paginated list of all equipment
+     * @throws IllegalArgumentException if the pageable parameter is invalid
+     */
+    Page<Equipment> getAllEquipment(Pageable pageable);
 
-	Equipment getEquipmentById(int id);
+    /**
+     * Retrieves a single equipment entity by its unique identifier.
+     *
+     * @param id the ID of the equipment to retrieve
+     * @return the equipment entity with the specified ID
+     * @throws EntityNotFoundException if no equipment is found with the given ID
+     */
+    Equipment getEquipmentById(int id);
 }
+

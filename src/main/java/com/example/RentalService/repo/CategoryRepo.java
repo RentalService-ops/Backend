@@ -7,10 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.example.RentalService.model.Category;
 
-/**
- * Repository interface for Category entity.
- * Provides CRUD operations and custom query methods.
- */
+
 public interface CategoryRepo extends JpaRepository<Category, Integer> {
 	
     /**
