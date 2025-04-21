@@ -216,10 +216,9 @@ public class AdminController {
 	@GetMapping("/bookings")
 	public ResponseEntity<Map<String, Object>> getAllBookings(@RequestParam(defaultValue = "0") int page,
 			@RequestParam(defaultValue = "10") int size,
-			@RequestParam(defaultValue = "desc") String direction, @RequestParam(required = false) String searchBy) {
-
+			@RequestParam(defaultValue = "desc") String direction, @RequestParam(required = false) String search) {
 		Pageable pageable = PageRequest.of(page, size);
-		Page<AdminBookingsDTO> bookings = rentalBookingService.getAllBookingsBySearch(searchBy,pageable);
+		Page<AdminBookingsDTO> bookings = rentalBookingService.getAllBookingsBySearch(search,pageable);
 
 		Map<String, Object> response = new HashMap<>();
 		response.put("content", bookings);
@@ -325,5 +324,10 @@ public class AdminController {
 			return ResponseEntity.ok("Category deleted successfully.");
 		}
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Category not found.");
+	}
+	
+	@GetMapping("/getAllBookings")
+	public ResponseEntity<?> getAllBookings(){
+		return rentalBookingService.getAllBookingByAdmin();
 	}
 }

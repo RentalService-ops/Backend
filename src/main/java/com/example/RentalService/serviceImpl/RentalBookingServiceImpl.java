@@ -2,7 +2,9 @@ package com.example.RentalService.serviceImpl;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -274,5 +276,20 @@ public class RentalBookingServiceImpl implements RentalBookingService{
 			return equipmentRepo.findById(id).get().getName();
 		}
 		return userRepositry.findById(id).get().getUsername();
+	}
+
+
+	@Override
+	public ResponseEntity<Map<String, Object>> getAllBookingByAdmin() {
+
+		int count=0;
+		List<Rental_Bookings> bookings = rentalRepo.findAll().reversed();
+		count=bookings.size();
+		Map<String, Object> response=new HashMap<>();
+		response.put("totalBookings", count);
+		response.put("recentbookings",bookings.subList(0,4).stream().map(booking -> new RentalBookingsDTO(booking)).collect(Collectors.toList()));
+		
+		
+		return ResponseEntity.ok(response);
 	}
 }

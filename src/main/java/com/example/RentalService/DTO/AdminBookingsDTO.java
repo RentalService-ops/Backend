@@ -15,14 +15,14 @@ public class AdminBookingsDTO {
 	
 	private int totalBookings;
 	
-	private int approvedBookings;
+	private int completedBookings;
 	
 	private int rejectedBookings;
 	
-	private int pendingBookings;
-	
 	private int cancelledBookings;
 	
-	private int completedBookings;
+	private int  approvedBookings;
+	
+	private int pendingBookings;
 
 }
