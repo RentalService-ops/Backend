@@ -94,4 +94,6 @@ public interface RentalBookingService {
      * @return ResponseEntity with status and booking data.
      */
     ResponseEntity<Map<String, Object>> getAllBookingByAdmin();
+    
+    ResponseEntity<?> returnEquipment(int equipmentId);
 }

@@ -27,7 +27,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.RentalService.DTO.AdminBookingsDTO;
 import com.example.RentalService.DTO.CategoryDTO;
 import com.example.RentalService.DTO.EquipmentDTO;
-import com.example.RentalService.DTO.UsersDTO;
 import com.example.RentalService.model.BookingStatus;
 import com.example.RentalService.model.Category;
 import com.example.RentalService.model.CustomerQuery;
@@ -111,24 +110,6 @@ public class AdminController {
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 	}
 
-	/**
-	 * Updates a user by ID.
-	 *
-	 * @param id      user ID
-	 * @param userDTO updated user data
-	 * @return updated user DTO or 404 if user not found
-	 */
-	@PutMapping("/users/{id}")
-	public ResponseEntity<UsersDTO> updateUserById(@PathVariable int id, @RequestBody UsersDTO userDTO) {
-		Users user = userService.getUserByUserId(id);
-		if (user != null) {
-			user.setEmail(userDTO.getEmail());
-			user.setPhoneNumber(userDTO.getPhoneNo());
-			user.setUsername(userDTO.getUsername());
-			return ResponseEntity.ok(new UsersDTO(userService.saveUser(user)));
-		}
-		return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-	}
 
 	/**
 	 * Retrieves all unresolved customer queries.
@@ -183,7 +164,7 @@ public class AdminController {
 		List<EquipmentDTO> equipments=new ArrayList<>();
 		
 		for(Equipment equipment: equipmentPage) {
-			if(equipment.isActive() && equipment.getCategory()!=null) {
+			if(equipment.isActive()) {
 				equipments.add(new EquipmentDTO(equipment));
 			}
 		}

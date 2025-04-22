@@ -165,6 +165,5 @@ public class EquipmentController {
                 .contentType(mediaType)
                 .body(resource);
     }
-
     
 }

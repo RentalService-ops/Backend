@@ -10,13 +10,17 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name="Customer_query")
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Getter
+@Setter
 public class CustomerQuery {
 
     // Property to store the unique query ID
@@ -40,124 +44,4 @@ public class CustomerQuery {
     @ManyToOne(fetch=FetchType.EAGER)
     @JoinColumn(name="user_id")
     private Users user;
-
-    // Getter for username
-    /**
-     * Gets the username of the user who made the query.
-     * 
-     * @return the username of the user.
-     */
-    public String getUsername() {
-        return username;
-    }
-
-    // Setter for username
-    /**
-     * Sets the username of the user who made the query.
-     * 
-     * @param username the username to be set for the query.
-     */
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    // Getter for useremail
-    /**
-     * Gets the email address of the user who made the query.
-     * 
-     * @return the email of the user.
-     */
-    public String getUseremail() {
-        return useremail;
-    }
-
-    // Setter for useremail
-    /**
-     * Sets the email address of the user who made the query.
-     * 
-     * @param useremail the email to be set for the query.
-     */
-    public void setUseremail(String useremail) {
-        this.useremail = useremail;
-    }
-
-    // Getter for query
-    /**
-     * Gets the actual query submitted by the user.
-     * 
-     * @return the query text submitted by the user.
-     */
-    public String getQuery() {
-        return query;
-    }
-
-    // Setter for query
-    /**
-     * Sets the actual query text submitted by the user.
-     * 
-     * @param query the query to be set for the user.
-     */
-    public void setQuery(String query) {
-        this.query = query;
-    }
-
-    // Getter for queryStatus
-    /**
-     * Gets the status of the query (e.g., pending, resolved).
-     * 
-     * @return the current status of the query.
-     */
-    public String getQueryStatus() {
-        return queryStatus;
-    }
-
-    // Setter for queryStatus
-    /**
-     * Sets the status of the query.
-     * 
-     * @param queryStatus the status to be set for the query.
-     */
-    public void setQueryStatus(String queryStatus) {
-        this.queryStatus = queryStatus;
-    }
-
-    // Getter for userId
-    /**
-     * Gets the ID of the user who submitted the query.
-     * 
-     * @return the user ID associated with this query.
-     */
-    public int getUserId() {
-        return this.user.getId();
-    }
-
-    // Getter for query_id
-    /**
-     * Gets the unique ID of the query.
-     * 
-     * @return the query ID.
-     */
-    public int getId() {
-        return this.query_id;
-    }
-
-    // Setter for query_id
-    /**
-     * Sets the unique ID for the query.
-     * 
-     * @param id the ID to be set for the query.
-     */
-    public void setId(int id) {
-        this.query_id = id;
-    }
-
-    // Setter for user
-    /**
-     * Sets the user who submitted the query.
-     * 
-     * @param user the user to be associated with this query.
-     */
-    public void setUser(Users user) {
-        this.user = user;
-    }
 }

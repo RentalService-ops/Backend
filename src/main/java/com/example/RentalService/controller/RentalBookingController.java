@@ -103,4 +103,10 @@ public class RentalBookingController {
     public ResponseEntity<RentalBookingsDTO> rejectBooking(@PathVariable int id) {
         return ResponseEntity.ok(new RentalBookingsDTO(service.rejectBooking(id)));
     }
+    
+	@PutMapping("/{bookingId}/return")
+	@PreAuthorize("hasRole('user')")
+	public ResponseEntity<?> returnEquipment(@PathVariable int bookingId) {
+	    return service.returnEquipment(bookingId);
+	}
 }

@@ -160,6 +160,8 @@ public class EquipmentServiceImpl implements EquipmentService{
 
  	@Override
  	public Page<Equipment> getAllEquipment(Pageable pageable) {
+ 		Page<Equipment> equipments = equipmentRepo.findAll(pageable);
+ 		System.out.println(equipments.getSize());
  		return equipmentRepo.findAll(pageable);
 
  	}

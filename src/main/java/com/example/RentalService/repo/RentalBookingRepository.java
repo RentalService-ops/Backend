@@ -1,5 +1,6 @@
 package com.example.RentalService.repo;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.data.domain.Pageable;
@@ -106,5 +107,6 @@ public interface RentalBookingRepository extends JpaRepository<Rental_Bookings, 
      */
     @Query(value = "SELECT COUNT(DISTINCT equipment_id) FROM rental_bookings", nativeQuery = true)
     Long countDistinctEquipmentId();
-
+    
+    List<Rental_Bookings> findByEndDateBeforeAndIsReturnedFalse(LocalDate date);
 }

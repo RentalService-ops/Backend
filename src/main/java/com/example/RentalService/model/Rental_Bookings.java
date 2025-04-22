@@ -29,37 +29,41 @@ public class Rental_Bookings {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int bookingId;
+    private int bookingId;//Booking ID
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "user_id", nullable = false)
-    private Users user;
+    private Users user;//User associated with booking
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "rental_id", nullable = false)
-    private Users renter;
+    private Users renter;//Renter associated with booking
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "equipment_id", nullable = false)
-    private Equipment equipment;
+    private Equipment equipment;//Equipment associated with booking
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "address_id", referencedColumnName = "id", nullable = false)
-    private Address address;
+    private Address address;//Address associated with booking
 
     @Column(nullable = false)
-    private int equipmentQuantity;
+    private int equipmentQuantity;//Equipment Quantity associated with booking
 
     @Column(nullable = false)
-    private LocalDate startDate;
+    private LocalDate startDate;//Booking start date.
 
     @Column(nullable = false)
-    private LocalDate endDate;
+    private LocalDate endDate;//Booking end date.
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private BookingStatus status;
+    private BookingStatus status;//Booking status
 
     @Column(name = "total_price")
-    private BigDecimal totalPrice;
+    private BigDecimal totalPrice;//Total price for renting equipment whose booking is made.
+    
+    @Column(name="isReturned")
+    @Builder.Default    //For default property value initialization.
+    private boolean isReturned=false;//Determines whether equipment lot associated with the booking is returned or not.
 }

@@ -1,5 +1,6 @@
 package com.example.RentalService.serviceImpl;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,6 +16,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.example.RentalService.DTO.AdminBookingsDTO;
@@ -288,5 +291,48 @@ public class RentalBookingServiceImpl implements RentalBookingService{
 		return ResponseEntity.ok(response);
 	}
 	
+	@Async
+	@Transactional
+	@Scheduled(cron = "0 0 0/12 * * ?")//Scheduling method execution after every 12 hours
+	public void autoCompleteBookings() {
+		System.out.println("Cron job executed");
+	    List<Rental_Bookings> bookings = rentalRepo.findByEndDateBeforeAndIsReturnedFalse(LocalDate.now());
+	    if(bookings != null) {
+		    for (Rental_Bookings booking : bookings) {
+		        booking.setReturned(true);
+		        booking.setStatus(BookingStatus.COMPLETED);
+		        rentalRepo.save(booking);
+	
+		        Equipment equipment = booking.getEquipment();
+		        equipment.setQuantity(equipment.getQuantity() + booking.getEquipmentQuantity());
+		        equipmentRepo.save(equipment);
+		    }
+	    }
+	}
+
+
+	@Override
+	public ResponseEntity<?> returnEquipment(int bookingId) {
+		Rental_Bookings booking = rentalRepo.findById(bookingId)
+		        .orElseThrow(() -> new IllegalArgumentException("Booking not found.Either booking id specified is null or booking with specified id does not exist."));
+
+		    if (booking.isReturned()) {
+		        return ResponseEntity.badRequest().body("Equipment already returned");
+		    }
+
+		    if (LocalDate.now().isBefore(booking.getEndDate())) {
+		        return ResponseEntity.badRequest().body("Cannot return before end date");
+		    }
+
+		    booking.setReturned(true);
+		    booking.setStatus(BookingStatus.COMPLETED);
+		    rentalRepo.save(booking);
+
+		    Equipment equipment = booking.getEquipment();
+		    equipment.setQuantity(equipment.getQuantity() + booking.getEquipmentQuantity());
+		    equipmentRepo.save(equipment);
+		return ResponseEntity.ok("Equipment marked as returned");
+	}
+
 	
 }

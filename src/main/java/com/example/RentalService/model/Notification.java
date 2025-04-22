@@ -20,11 +20,11 @@ public class Notification {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long id;//Notification ID
 
-    private String message;
+    private String message;//Notification message
 
-    private Integer userId;
+    private Integer userId;//ID of user to whom notification is to be sent.
 
-    private LocalDateTime timestamp;
+    private LocalDateTime timestamp;//Timestamp of notification
 }
