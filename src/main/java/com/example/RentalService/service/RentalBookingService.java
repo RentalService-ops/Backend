@@ -70,13 +70,6 @@ public interface RentalBookingService {
      */
     Page<AdminBookingsDTO> getAllBookingsBySearch(String search, Pageable pageable);
 
-    /**
-     * Count the total number of bookings associated with a specific renter.
-     * 
-     * @param renterUsername the username of the renter
-     * @return the count of bookings
-     */
-    long countBookingsByRenterUsername(String renterUsername);
 
     /**
      * Update the status of a booking.

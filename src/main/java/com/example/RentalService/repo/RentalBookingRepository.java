@@ -30,14 +30,6 @@ public interface RentalBookingRepository extends JpaRepository<Rental_Bookings, 
     List<Rental_Bookings> findByUser_Id(int userId);
 
     /**
-     * Counts the number of bookings made for equipment listed by a specific renter (by username).
-     *
-     * @param renterUsername the username of the equipment owner
-     * @return number of bookings for that renter's equipment
-     */
-    long countByEquipment_User_Username(String renterUsername);
-
-    /**
      * Retrieves aggregated booking statistics for each renter, including total and status-wise count.
      *
      * @param pageable pagination configuration
@@ -87,4 +79,32 @@ public interface RentalBookingRepository extends JpaRepository<Rental_Bookings, 
             + "(SELECT COUNT(*) FROM rental_bookings rb1 WHERE rb1.equipment_id = rb.equipment_id AND rb1.status = 'PENDING') "
             + "FROM rental_bookings rb GROUP BY equipment_id", nativeQuery = true)
     List<Object[]> findBookingBySearchEquipment(Pageable pageable);
+    
+    /**
+     * Retrieves the total number of unique rentals based on rental_id.
+     * This is used to support pagination when grouping booking statistics by renter.
+     *
+     * @return total number of distinct rental_id entries in rental_bookings
+     */
+    @Query(value = "SELECT COUNT(DISTINCT rental_id) FROM rental_bookings", nativeQuery = true)
+    Long countDistinctRentalId();
+    
+    /**
+     * Retrieves the total number of unique users based on user_id.
+     * This is used to support pagination when grouping booking statistics by user.
+     *
+     * @return total number of distinct user_id entries in rental_bookings
+     */
+    @Query(value = "SELECT COUNT(DISTINCT user_id) FROM rental_bookings", nativeQuery = true)
+    Long countDistinctUserId();
+    
+    /**
+     * Retrieves the total number of unique equipment items based on equipment_id.
+     * This is used to support pagination when grouping booking statistics by equipment.
+     *
+     * @return total number of distinct equipment_id entries in rental_bookings
+     */
+    @Query(value = "SELECT COUNT(DISTINCT equipment_id) FROM rental_bookings", nativeQuery = true)
+    Long countDistinctEquipmentId();
+
 }

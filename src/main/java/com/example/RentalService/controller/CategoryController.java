@@ -66,10 +66,10 @@ public class CategoryController {
 	 * Deletes the category with corresponding id.
 	 * @param id: The id of the category to be deleted.
 	 * @throws DataIntegrityViolationException if foreign key constraint is violated while deleting category.
-	 * Returns deleted category.
+	 * @return deleted category.
 	 * */
 	@DeleteMapping("/category/{id}")
-	@PreAuthorize("hasRole('rental')")
+	@PreAuthorize("hasRole('rental') or hasRole('admin')")
 	public ResponseEntity<?> deleteCategoryById(@PathVariable int id) throws DataIntegrityViolationException{
 		return service.deleteCategory(id);
 	}
@@ -88,7 +88,7 @@ public class CategoryController {
 	}
 	
 	/**
-	 * Returns all the categories registered.
+	 * @return all the categories registered.
 	 * */
 	@GetMapping("/getAllCategory")
 	@PreAuthorize("hasRole('user') or hasRole('admin') or hasRole('rental')")
@@ -97,9 +97,9 @@ public class CategoryController {
 	}
 	
 	/**
-	 * Returns categories corresponding to specific user id.
 	 * @param id: id of the user whose category details are to be fetched.
-     *@throws IllegalArgumentException if id is null.
+     * @throws IllegalArgumentException if id is null.
+	 * @return categories corresponding to specific user id.
 	 * */
 	@GetMapping("/category/{userId}")
 	@PreAuthorize("hasRole('rental')")

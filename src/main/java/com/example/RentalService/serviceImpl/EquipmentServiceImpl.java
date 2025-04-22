@@ -112,7 +112,7 @@ public class EquipmentServiceImpl implements EquipmentService{
         
         if(equipmentsObtained!=null) {
 			for(Equipment equipment : equipmentsObtained) {
-			   if(equipment.isActive()) {
+			   if(equipment.isActive() && equipment.getCategory()!=null) {
 				EquipmentDTO equipmentDTO = new EquipmentDTO(equipment);
 				equipments.add(equipmentDTO);
 			}

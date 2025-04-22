@@ -208,13 +208,6 @@ public class RentalBookingServiceImpl implements RentalBookingService{
 
 
 	@Override
-	public long countBookingsByRenterUsername(String renterUsername) {
-	    return rentalRepo.countByEquipment_User_Username(renterUsername);
-
-	}
-
-
-	@Override
 	public boolean updateBookingStatus(int id, BookingStatus status) {
 		Optional<Rental_Bookings> bookingOptional = rentalRepo.findById(id);
 		if (bookingOptional.isPresent()) {
@@ -242,15 +235,20 @@ public class RentalBookingServiceImpl implements RentalBookingService{
 	public Page<AdminBookingsDTO> getAllBookingsBySearch(String searchBy, Pageable pageable) {
 		List<Object[]> bookings = new ArrayList<Object[]>();
 		String search= searchBy !=null ? searchBy : "Renter";
+		long totalBookings=0;
 		if(search.equals("User")){
 			bookings=rentalRepo.findBookingBySearchUser(pageable);
+			totalBookings=rentalRepo.countDistinctUserId();
 		}
 		else if(search.equals("Renter")) {
 			bookings=rentalRepo.findBookingBySearchRenter(pageable);
+			totalBookings=rentalRepo.countDistinctRentalId();
 		}
 		else if(search.equals("Equipment")) {
 			bookings=rentalRepo.findBookingBySearchEquipment(pageable);
+			totalBookings=rentalRepo.countDistinctEquipmentId();
 		}
+		System.out.println(totalBookings);
 		Page<AdminBookingsDTO> bookingsDTO = new PageImpl<>(
 			    bookings.stream()
 			        .map(booking -> new AdminBookingsDTO(
@@ -262,7 +260,7 @@ public class RentalBookingServiceImpl implements RentalBookingService{
 						((Number) booking[5])!= null ? ((Number) booking[5]).intValue() : 0,
 						((Number) booking[6])!= null ? ((Number) booking[6]).intValue() : 0
 			        ))
-			        .collect(Collectors.toList())
+			        .collect(Collectors.toList()),pageable,totalBookings
 			);
 
 
@@ -287,7 +285,8 @@ public class RentalBookingServiceImpl implements RentalBookingService{
 		response.put("totalBookings", count);
 		response.put("recentbookings",bookings.subList(0,4).stream().map(booking -> new RentalBookingsDTO(booking)).collect(Collectors.toList()));
 		
-		
 		return ResponseEntity.ok(response);
 	}
+	
+	
 }
