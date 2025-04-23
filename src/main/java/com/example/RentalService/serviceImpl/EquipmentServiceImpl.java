@@ -153,16 +153,16 @@ public class EquipmentServiceImpl implements EquipmentService{
      }
      
  	@Override
- 	public Page<Equipment> searchEquipmentByName(String name, Pageable pageable) {
- 		return equipmentRepo.findByNameContainingIgnoreCase(name, pageable);
+ 	public Page<EquipmentDTO> searchEquipmentByName(String name, Pageable pageable) {
+ 		Page<Equipment> equipments=equipmentRepo.findByNameContainingIgnoreCaseAndIsActiveTrue(name,pageable);
+ 		return equipments.map(equipment->new EquipmentDTO(equipment));
 
  	}
 
  	@Override
- 	public Page<Equipment> getAllEquipment(Pageable pageable) {
- 		Page<Equipment> equipments = equipmentRepo.findAll(pageable);
- 		System.out.println(equipments.getSize());
- 		return equipmentRepo.findAll(pageable);
+ 	public Page<EquipmentDTO> getAllEquipment(Pageable pageable) {
+ 		Page<Equipment> equipments = equipmentRepo.findByIsActiveTrue(pageable);
+ 		return equipments.map((equipment)->new EquipmentDTO(equipment));
 
  	}
 

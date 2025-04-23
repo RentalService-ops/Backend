@@ -291,6 +291,8 @@ public class RentalBookingServiceImpl implements RentalBookingService{
 		return ResponseEntity.ok(response);
 	}
 	
+	
+	/***/
 	@Async
 	@Transactional
 	@Scheduled(cron = "0 0 0/12 * * ?")//Scheduling method execution after every 12 hours
@@ -300,7 +302,6 @@ public class RentalBookingServiceImpl implements RentalBookingService{
 	    if(bookings != null) {
 		    for (Rental_Bookings booking : bookings) {
 		        booking.setReturned(false);
-		        booking.setStatus(BookingStatus.COMPLETED);
 		        rentalRepo.save(booking);
 	
 		        Equipment equipment = booking.getEquipment();

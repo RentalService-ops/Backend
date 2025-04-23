@@ -42,5 +42,12 @@ public interface EquipmentRepo extends JpaRepository<Equipment, Integer> {
      * @param pageable the pagination information
      * @return a page of equipment matching the search term
      */
-    Page<Equipment> findByNameContainingIgnoreCase(String name, Pageable pageable);
+    Page<Equipment> findByNameContainingIgnoreCaseAndIsActiveTrue(String name,Pageable pageable);
+    
+    /**
+     * Searches for active equipments/equipments which are not deleted
+     * @param pageable pagination configuration
+     * @return a page of equipment matching the required criteria.
+     * */
+    Page<Equipment> findByIsActiveTrue(Pageable pageable);
 }

@@ -1,13 +1,11 @@
 package com.example.RentalService.controller;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -30,7 +28,6 @@ import com.example.RentalService.DTO.EquipmentDTO;
 import com.example.RentalService.model.BookingStatus;
 import com.example.RentalService.model.Category;
 import com.example.RentalService.model.CustomerQuery;
-import com.example.RentalService.model.Equipment;
 import com.example.RentalService.model.Users;
 import com.example.RentalService.service.CategoryService;
 import com.example.RentalService.service.CustomerQueryService;
@@ -154,27 +151,21 @@ public class AdminController {
 
 		Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(direction), sortBy));
 
-		Page<Equipment> equipmentPage;
+		Page<EquipmentDTO> equipmentPage;
 		if (search != null && !search.isEmpty()) {
 			equipmentPage = equipmentService.searchEquipmentByName(search, pageable);
 		} else {
 			equipmentPage = equipmentService.getAllEquipment(pageable);
 		}
-		
-		List<EquipmentDTO> equipments=new ArrayList<>();
-		
-		for(Equipment equipment: equipmentPage) {
-			if(equipment.isActive()) {
-				equipments.add(new EquipmentDTO(equipment));
-			}
+		for(EquipmentDTO equipment: equipmentPage) {
+			System.out.println(equipment.getName());
+			System.out.println(equipmentPage.getSize());
 		}
-		
-		Page<EquipmentDTO> equipmentDTOPage=new PageImpl<>(equipments);
 		Map<String, Object> response = new HashMap<>();
-		response.put("content", equipmentDTOPage.getContent());
-		response.put("currentPage", equipmentDTOPage.getNumber());
-		response.put("totalItems", equipmentDTOPage.getTotalElements());
-		response.put("totalPages", equipmentDTOPage.getTotalPages());
+		response.put("content", equipmentPage.getContent());
+		response.put("currentPage", equipmentPage.getNumber());
+		response.put("totalItems", equipmentPage.getTotalElements());
+		response.put("totalPages", equipmentPage.getTotalPages());
 
 		return ResponseEntity.ok(response);
 	}

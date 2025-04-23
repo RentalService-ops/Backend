@@ -73,7 +73,7 @@ public interface EquipmentService {
      * @return a paginated list of equipment matching the search term
      * @throws IllegalArgumentException if the search term is null or pageable is invalid
      */
-    Page<Equipment> searchEquipmentByName(String search, Pageable pageable);
+    Page<EquipmentDTO> searchEquipmentByName(String search, Pageable pageable);
 
     /**
      * Retrieves all equipment entities with pagination support.
@@ -82,7 +82,7 @@ public interface EquipmentService {
      * @return a paginated list of all equipment
      * @throws IllegalArgumentException if the pageable parameter is invalid
      */
-    Page<Equipment> getAllEquipment(Pageable pageable);
+    Page<EquipmentDTO> getAllEquipment(Pageable pageable);
 
     /**
      * Retrieves a single equipment entity by its unique identifier.
