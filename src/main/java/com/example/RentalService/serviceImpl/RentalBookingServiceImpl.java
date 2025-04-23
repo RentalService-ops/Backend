@@ -299,7 +299,7 @@ public class RentalBookingServiceImpl implements RentalBookingService{
 	    List<Rental_Bookings> bookings = rentalRepo.findByEndDateBeforeAndIsReturnedFalse(LocalDate.now());
 	    if(bookings != null) {
 		    for (Rental_Bookings booking : bookings) {
-		        booking.setReturned(true);
+		        booking.setReturned(false);
 		        booking.setStatus(BookingStatus.COMPLETED);
 		        rentalRepo.save(booking);
 	

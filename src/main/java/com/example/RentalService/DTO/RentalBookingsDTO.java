@@ -29,6 +29,8 @@ public class RentalBookingsDTO {
 	
 	private BookingStatus status;
 	
+	private boolean isReturned;
+	
 	/**
 	 * Default constructor
 	 * */
@@ -49,6 +51,7 @@ public class RentalBookingsDTO {
 		this.endDate=booking.getEndDate();
 		this.status=booking.getStatus();
 		this.setTotalAmount(booking.getTotalPrice());
+		this.setReturned(booking.isReturned());
 	}
 
 }
