@@ -109,4 +109,10 @@ public class RentalBookingController {
 	public ResponseEntity<?> returnEquipment(@PathVariable int bookingId) {
 	    return service.returnEquipment(bookingId);
 	}
+	
+	@PutMapping("/updateBooking")
+	@PreAuthorize("hasRole('user')")
+	public ResponseEntity<?> updateBooking(@RequestBody RentalBookingsDTO request){
+		return service.updateBooking(request);
+	}
 }

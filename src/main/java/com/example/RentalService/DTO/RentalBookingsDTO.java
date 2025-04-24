@@ -54,4 +54,13 @@ public class RentalBookingsDTO {
 		this.setReturned(booking.isReturned());
 	}
 
+	@Override
+	public String toString() {
+		return "RentalBookingsDTO [bookingId=" + bookingId + ", userName=" + userName + ", equipmentName="
+				+ equipmentName + ", equipmentQuantity=" + equipmentQuantity + ", startDate=" + startDate + ", endDate="
+				+ endDate + ", totalAmount=" + totalAmount + ", status=" + status + ", isReturned=" + isReturned + "]";
+	}
+	
+	
+
 }

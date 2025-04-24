@@ -90,4 +90,9 @@ public class PaymentController {
     public ResponseEntity<?> getPayment(@PathVariable int id){
         return paymentService.getPaymentByUserId(id);
     }
+    
+    @GetMapping("getRentalPayment/{id}")
+    public ResponseEntity<?> getRentalPayments(@PathVariable int id){
+    	return paymentService.getAllPaymentOfRental(id);
+    }
 }

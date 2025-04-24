@@ -1,7 +1,9 @@
 package com.example.RentalService.serviceImpl;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -333,6 +335,36 @@ public class RentalBookingServiceImpl implements RentalBookingService{
 		    equipment.setQuantity(equipment.getQuantity() + booking.getEquipmentQuantity());
 		    equipmentRepo.save(equipment);
 		return ResponseEntity.ok("Equipment marked as returned");
+	}
+
+
+	@Override
+	public ResponseEntity<?> updateBooking(RentalBookingsDTO booking) {
+		
+		
+
+		if(booking.getStatus() == BookingStatus.PENDING) {
+			LocalDate start = booking.getStartDate();
+			LocalDate end = booking.getEndDate();
+
+			long totalDays = ChronoUnit.DAYS.between(start, end);
+			
+			Rental_Bookings currenBbooking = rentalRepo.findById(booking.getBookingId()).map(currentBbook -> {
+				currentBbook.setEndDate(booking.getEndDate());
+				currentBbook.setStartDate(booking.getStartDate());
+				currentBbook.setTotalPrice(currentBbook.getEquipment().getPricePerDay()
+					    .multiply(BigDecimal.valueOf(totalDays))
+					    .multiply(BigDecimal.valueOf(booking.getEquipmentQuantity())));
+				currentBbook.setEquipmentQuantity(booking.getEquipmentQuantity());
+			
+				return rentalRepo.save(currentBbook);
+			}).get();
+			
+			return ResponseEntity.ok(new RentalBookingsDTO(currenBbooking));
+		}else {
+			return ResponseEntity.badRequest().body("You Can't Modify Booking");
+		}
+	
 	}
 
 	

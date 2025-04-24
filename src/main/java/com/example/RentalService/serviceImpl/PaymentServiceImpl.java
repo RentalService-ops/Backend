@@ -176,4 +176,18 @@ public class PaymentServiceImpl implements PaymentService {
 	    return ResponseEntity.ok(payments);
 	}
 
+
+
+	@Override
+	public ResponseEntity<?> getAllPaymentOfRental(int id) {
+
+		List<PaymentResponseDTO> rentalPayemnt = paymentRepository.findAll().stream()
+			    .filter(payment -> payment.getOrder().getRenter().getId() == id)
+			    .sorted((p1, p2) -> p2.getPaymentDate().compareTo(p1.getPaymentDate())) // descending
+			    .map(payment -> new PaymentResponseDTO(payment))
+			    .toList();
+
+		return ResponseEntity.ok(rentalPayemnt);
+	}
+
 }

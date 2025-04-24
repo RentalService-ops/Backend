@@ -48,4 +48,6 @@ public interface PaymentService {
      * @return a ResponseEntity containing payment details or an appropriate error message
      */
     ResponseEntity<?> getPaymentByUserId(int id);
+    
+    ResponseEntity<?> getAllPaymentOfRental(int id);
 }

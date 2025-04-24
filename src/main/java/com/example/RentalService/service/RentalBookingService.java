@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 
 import com.example.RentalService.DTO.AdminBookingsDTO;
+import com.example.RentalService.DTO.RentalBookingsDTO;
 import com.example.RentalService.model.BookingStatus;
 import com.example.RentalService.model.Rental_Bookings;
 
@@ -96,4 +97,6 @@ public interface RentalBookingService {
     ResponseEntity<Map<String, Object>> getAllBookingByAdmin();
     
     ResponseEntity<?> returnEquipment(int equipmentId);
+    
+    ResponseEntity<?> updateBooking(RentalBookingsDTO booking);
 }
