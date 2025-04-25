@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 
 import com.example.RentalService.model.Equipment;
 
@@ -50,4 +51,11 @@ public interface EquipmentRepo extends JpaRepository<Equipment, Integer> {
      * @return a page of equipment matching the required criteria.
      * */
     Page<Equipment> findByIsActiveTrue(Pageable pageable);
+    
+    /**
+     * Deletes equipments based on userId.
+     * @param userId the id of user whose equipment details are to be deleted.
+     * */
+    @Modifying  //Annotation to add when using update , delete queries.
+    void deleteEquipmentByUserId(int userId);
 }

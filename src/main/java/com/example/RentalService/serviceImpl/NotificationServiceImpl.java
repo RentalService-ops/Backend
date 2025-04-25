@@ -27,4 +27,14 @@ public class NotificationServiceImpl implements NotificationService {
 
 	}
 
+	@Override
+	public ResponseEntity<?> getRecentNotifications() {
+		List<Notification> notifications=notificationRepository.findAll();
+		if(notifications==null) {
+			return ResponseEntity.ok("No notification found");
+		}
+	    notifications=notifications.reversed();
+		return ResponseEntity.ok().body(notifications.subList(0, 4));
+	}
+
 }

@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -108,5 +109,21 @@ public interface RentalBookingRepository extends JpaRepository<Rental_Bookings, 
     @Query(value = "SELECT COUNT(DISTINCT equipment_id) FROM rental_bookings", nativeQuery = true)
     Long countDistinctEquipmentId();
     
+    /**
+     * Retrieves a list of rental bookings that have not been returned 
+     * and have an end date before the specified date.
+     *
+     * This method is typically used to identify overdue rentals.
+     *
+     * @param date the cutoff date to check against the rental end dates
+     * @return a list of {@link Rental_Bookings} that are overdue and not yet returned
+     */
     List<Rental_Bookings> findByEndDateBeforeAndIsReturnedFalse(LocalDate date);
+    
+    /**
+     * Deletes bookings based on userId
+     * @param userId the id of user whose booking data is to be deleted.
+     * */
+    @Modifying //Annotation to add when using update , delete queries.
+    void deleteRental_BookingsByUserId(int userId);
 }

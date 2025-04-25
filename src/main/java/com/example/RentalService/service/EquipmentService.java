@@ -92,5 +92,11 @@ public interface EquipmentService {
      * @throws EntityNotFoundException if no equipment is found with the given ID
      */
     Equipment getEquipmentById(int id);
+    
+    /**
+     * Deletes equipments based on userId.
+     * @param userId the id of user whose equipment details are to be deleted.
+     * */
+    void deleteEquipmentByUserId(int userId);
 }
 

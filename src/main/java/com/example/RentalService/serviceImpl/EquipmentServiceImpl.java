@@ -25,6 +25,8 @@ import com.example.RentalService.repo.RentalBookingRepository;
 import com.example.RentalService.service.AuthService;
 import com.example.RentalService.service.EquipmentService;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class EquipmentServiceImpl implements EquipmentService{
 
@@ -170,4 +172,10 @@ public class EquipmentServiceImpl implements EquipmentService{
  	public Equipment getEquipmentById(int id) {
  		return equipmentRepo.findById(id).orElse(null);
  	}
+
+	@Override
+    @Transactional
+	public void deleteEquipmentByUserId(int userId) {
+		equipmentRepo.deleteEquipmentByUserId(userId);		
+	}
 }

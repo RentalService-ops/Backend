@@ -364,7 +364,12 @@ public class RentalBookingServiceImpl implements RentalBookingService{
 		}else {
 			return ResponseEntity.badRequest().body("You Can't Modify Booking");
 		}
+	}
 	
+    @Override
+	@Transactional
+	public void deleteBookingByUserId(int userId) {
+		rentalRepo.deleteRental_BookingsByUserId(userId);
 	}
 
 	

@@ -59,8 +59,15 @@ public interface CategoryService {
     /**
      * Retrieves all categories present in the database.
      * @param pageable pagination configuration
+     * @param searchBy search parameter
      * @return Fetched category data from database.
      * */
-	Page<Category> getAllCategories(Pageable pageable);
+	Page<Category> getAllCategories(Pageable pageable,String searchBy);
+	
+	/**
+	 * Deletes category based on userId.
+	 * @param userId the id of user whose category details are to be deleted.
+	 * */
+	void deleteCategoryByUserId(int userId);
 }
 

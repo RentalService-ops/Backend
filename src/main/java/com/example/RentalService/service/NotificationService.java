@@ -11,5 +11,9 @@ public interface NotificationService {
      * @return a ResponseEntity containing the list of notifications or an appropriate error message
      */
     ResponseEntity<?> getnotificationByUserId(Integer id);
-
+    
+    /**
+     * @return Recent notifications
+     * */
+    ResponseEntity<?> getRecentNotifications();
 }

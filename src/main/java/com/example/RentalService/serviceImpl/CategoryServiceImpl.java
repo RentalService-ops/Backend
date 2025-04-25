@@ -20,6 +20,8 @@ import com.example.RentalService.repo.CategoryRepo;
 import com.example.RentalService.repo.EquipmentRepo;
 import com.example.RentalService.service.CategoryService;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class CategoryServiceImpl implements CategoryService{
 
@@ -112,9 +114,20 @@ public class CategoryServiceImpl implements CategoryService{
 	}
 	
 	@Override
-	public Page<Category> getAllCategories(Pageable pageable) {
+	public Page<Category> getAllCategories(Pageable pageable,String search) {
+		if(search=="") {
         return repo.findAll(pageable); //  returns a Page<Category>
+		}
+		System.out.println(repo.findByNameContainingIgnoreCase(search, pageable).getTotalElements()+" hello");
+		return repo.findByNameContainingIgnoreCase(search, pageable);
 
+	}
+
+
+	@Override
+    @Transactional  //Need to apply transactional in order to use a custom delete , update query.
+	public void deleteCategoryByUserId(int userId) {
+		repo.deleteCategoryByUserId(userId);		
 	}
 	
 }

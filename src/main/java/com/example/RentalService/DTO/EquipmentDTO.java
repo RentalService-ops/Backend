@@ -37,6 +37,8 @@ public class EquipmentDTO {
    //category name of the category the equipment belongs to.
    private String categoryName;
    
+   private String userName;
+   
    //Default Constructor
    public EquipmentDTO() {
    }
@@ -53,5 +55,6 @@ public class EquipmentDTO {
       this.setEquipmentId(equipment.getEquipmentId());
       this.setImageUrl(equipment.getImageUrl());
       this.setCategoryName(equipment.getCategory().getName());
+      this.setUserName(equipment.getUser().getUsername());
    }
 }

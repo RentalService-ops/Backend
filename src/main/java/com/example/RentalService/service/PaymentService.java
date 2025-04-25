@@ -50,4 +50,10 @@ public interface PaymentService {
     ResponseEntity<?> getPaymentByUserId(int id);
     
     ResponseEntity<?> getAllPaymentOfRental(int id);
+    
+    /**
+     * Deletes payment details associated with user with given id
+     * @param userId id of the user whose payment details are to be deleted.
+     * */
+    void deletePaymentByUserId(int userId);
 }

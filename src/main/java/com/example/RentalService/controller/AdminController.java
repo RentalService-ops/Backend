@@ -15,7 +15,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,12 +25,12 @@ import com.example.RentalService.DTO.AdminBookingsDTO;
 import com.example.RentalService.DTO.CategoryDTO;
 import com.example.RentalService.DTO.EquipmentDTO;
 import com.example.RentalService.model.BookingStatus;
-import com.example.RentalService.model.Category;
 import com.example.RentalService.model.CustomerQuery;
 import com.example.RentalService.model.Users;
 import com.example.RentalService.service.CategoryService;
 import com.example.RentalService.service.CustomerQueryService;
 import com.example.RentalService.service.EquipmentService;
+import com.example.RentalService.service.PaymentService;
 import com.example.RentalService.service.RentalBookingService;
 import com.example.RentalService.service.UsersService;
 
@@ -59,6 +58,10 @@ public class AdminController {
 	//Service to perform operations on Category data.
 	@Autowired
 	private CategoryService categoryService;
+	
+	//Service to perform opertations on payment data.
+	@Autowired
+	private PaymentService paymentService;
 
 	public AdminController(UsersService userService) {
 		this.userService = userService;
@@ -92,17 +95,32 @@ public class AdminController {
 	}
 
 	/**
-	 * Deletes a user by ID.
+	 * Deletes a user by ID and all the details related to user.
 	 *
 	 * @param id user ID
 	 * @return HTTP 204 if successful, 404 if not found
 	 */
 	@DeleteMapping("/users/{id}")
-	public ResponseEntity<Void> deleteUserById(@PathVariable int id) {
+	public ResponseEntity<?> deleteUserById(@PathVariable int id) {
 		Users user = userService.getUserByUserId(id);
 		if (user != null) {
+			
+			//Deleting all the payments related to user.
+			paymentService.deletePaymentByUserId(id);
+			
+			//Deleting all the bookings related to user.
+			rentalBookingService.deleteBookingByUserId(id);
+			
+			//Deleting all the equipments related to user.
+			equipmentService.deleteEquipmentByUserId(id);
+			
+			//Deleting all the categories related to user.
+			categoryService.deleteCategoryByUserId(id);
+			
+			//Deleting the user
 			userService.deleteUser(id);
-			return ResponseEntity.noContent().build();
+			
+			return ResponseEntity.status(204).body("User successfully deleted.");
 		}
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 	}
@@ -156,10 +174,6 @@ public class AdminController {
 			equipmentPage = equipmentService.searchEquipmentByName(search, pageable);
 		} else {
 			equipmentPage = equipmentService.getAllEquipment(pageable);
-		}
-		for(EquipmentDTO equipment: equipmentPage) {
-			System.out.println(equipment.getName());
-			System.out.println(equipmentPage.getSize());
 		}
 		Map<String, Object> response = new HashMap<>();
 		response.put("content", equipmentPage.getContent());
@@ -237,22 +251,6 @@ public class AdminController {
 	}
 
 	/**
-	 * Adds a new equipment category.
-	 *
-	 * @param categoryDTO the new category data
-	 * @return created category DTO
-	 */
-	@PostMapping("/categories")
-	public ResponseEntity<?> addCategory(@RequestBody CategoryDTO categoryDTO) {
-		Category category = new Category();
-		category.setName(categoryDTO.getName());
-		category.setDescription(categoryDTO.getDescription());
-
-		Category savedCategory = categoryService.addCategory(category);
-		return ResponseEntity.status(HttpStatus.CREATED).body(new CategoryDTO(savedCategory));
-	}
-
-	/**
 	 * Retrieves paginated list of equipment categories.
 	 *
 	 * @param page     page number
@@ -264,10 +262,10 @@ public class AdminController {
 	@GetMapping("/categories")
 	public ResponseEntity<Map<String, Object>> getAllCategories(@RequestParam(defaultValue = "1") int page,
 			@RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "name") String sortBy,
-			@RequestParam(defaultValue = "asc") String direction) {
+			@RequestParam(defaultValue = "asc") String direction,@RequestParam(defaultValue="") String search) {
 
 		Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(direction), sortBy));
-		Page<Category> categoryPage = categoryService.getAllCategories(pageable);
+		Page<CategoryDTO> categoryPage = categoryService.getAllCategories(pageable,search).map((category)-> new CategoryDTO(category));
 
 		Map<String, Object> response = new HashMap<>();
 		response.put("content", categoryPage.getContent());
@@ -277,22 +275,10 @@ public class AdminController {
 
 		return ResponseEntity.ok(response);
 	}
-
-	/**
-	 * Deletes a category by ID.
-	 *
-	 * @param id category ID
-	 * @return success or error message
-	 */
-	@DeleteMapping("/categories/{id}")
-	public ResponseEntity<String> deleteCategory(@PathVariable int id) {
-		ResponseEntity<?> response = categoryService.deleteCategory(id);
-		if (response.getStatusCode() == HttpStatus.OK) {
-			return ResponseEntity.ok("Category deleted successfully.");
-		}
-		return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Category not found.");
-	}
 	
+	/**
+	 * Retrieves all the bookings and returns the latest bookings.
+	 * */
 	@GetMapping("/getAllBookings")
 	public ResponseEntity<?> getAllBookings(){
 		return rentalBookingService.getAllBookingByAdmin();

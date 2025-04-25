@@ -33,6 +33,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
+
 @Transactional
 public class PaymentServiceImpl implements PaymentService {
 
@@ -47,11 +48,12 @@ public class PaymentServiceImpl implements PaymentService {
     private final RentalBookingRepository rentalBookingRepository;
     private final EquipmentRepo equipmentRepository;
 
+    
+    
+    
     private RazorpayClient getRazorpayClient() throws RazorpayException {
         return new RazorpayClient(keyId, keySecret);
     }
-
-
 
     @Override
     public String createOrder(CreatePaymentRequestDTO request) throws RazorpayException {
@@ -188,6 +190,11 @@ public class PaymentServiceImpl implements PaymentService {
 			    .toList();
 
 		return ResponseEntity.ok(rentalPayemnt);
+	}
+	
+    @Transactional
+	public void deletePaymentByUserId(int userId) {
+		paymentRepository.deletePaymentByUserId(userId);		
 	}
 
 }
