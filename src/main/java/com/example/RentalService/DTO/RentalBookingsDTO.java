@@ -29,6 +29,8 @@ public class RentalBookingsDTO {
 	
 	private BookingStatus status;
 	
+	private AddressDTO addressDTO;
+	
 	private boolean isReturned;
 	
 	/**
@@ -52,15 +54,18 @@ public class RentalBookingsDTO {
 		this.status=booking.getStatus();
 		this.setTotalAmount(booking.getTotalPrice());
 		this.setReturned(booking.isReturned());
+		this.setAddressDTO(new AddressDTO( booking.getAddress()));
 	}
 
 	@Override
 	public String toString() {
 		return "RentalBookingsDTO [bookingId=" + bookingId + ", userName=" + userName + ", equipmentName="
 				+ equipmentName + ", equipmentQuantity=" + equipmentQuantity + ", startDate=" + startDate + ", endDate="
-				+ endDate + ", totalAmount=" + totalAmount + ", status=" + status + ", isReturned=" + isReturned + "]";
+				+ endDate + ", totalAmount=" + totalAmount + ", status=" + status + ", addressDTO=" + addressDTO
+				+ ", isReturned=" + isReturned + "]";
 	}
-	
+
+
 	
 
 }

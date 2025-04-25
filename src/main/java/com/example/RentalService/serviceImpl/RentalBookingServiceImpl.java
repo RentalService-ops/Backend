@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 import com.example.RentalService.DTO.AdminBookingsDTO;
 import com.example.RentalService.DTO.NotificationDTO;
 import com.example.RentalService.DTO.RentalBookingsDTO;
+import com.example.RentalService.model.Address;
 import com.example.RentalService.model.BookingStatus;
 import com.example.RentalService.model.Equipment;
 import com.example.RentalService.model.Notification;
@@ -34,6 +35,7 @@ import com.example.RentalService.repo.EquipmentRepo;
 import com.example.RentalService.repo.NotificationRepository;
 import com.example.RentalService.repo.RentalBookingRepository;
 import com.example.RentalService.repo.UserRepository;
+import com.example.RentalService.repo.addressRepo;
 import com.example.RentalService.service.RentalBookingService;
 
 import jakarta.transaction.Transactional;
@@ -57,7 +59,8 @@ public class RentalBookingServiceImpl implements RentalBookingService{
 	@Autowired
 	private NotificationRepository notificationRepository;
 
-	
+	@Autowired
+    private addressRepo addressRepo;
 	
 	@Override
 	public List<Rental_Bookings> findByRentalId(int id){
@@ -339,16 +342,18 @@ public class RentalBookingServiceImpl implements RentalBookingService{
 
 
 	@Override
+	@Transactional
 	public ResponseEntity<?> updateBooking(RentalBookingsDTO booking) {
 		
 		
-
+		System.out.println(booking.getAddressDTO().toString());
 		if(booking.getStatus() == BookingStatus.PENDING) {
 			LocalDate start = booking.getStartDate();
 			LocalDate end = booking.getEndDate();
 
 			long totalDays = ChronoUnit.DAYS.between(start, end);
 			
+			Address address = addressRepo.findById(booking.getAddressDTO().getId()).get();
 			Rental_Bookings currenBbooking = rentalRepo.findById(booking.getBookingId()).map(currentBbook -> {
 				currentBbook.setEndDate(booking.getEndDate());
 				currentBbook.setStartDate(booking.getStartDate());
@@ -356,7 +361,7 @@ public class RentalBookingServiceImpl implements RentalBookingService{
 					    .multiply(BigDecimal.valueOf(totalDays))
 					    .multiply(BigDecimal.valueOf(booking.getEquipmentQuantity())));
 				currentBbook.setEquipmentQuantity(booking.getEquipmentQuantity());
-			
+				currentBbook.setAddress(address);
 				return rentalRepo.save(currentBbook);
 			}).get();
 			
