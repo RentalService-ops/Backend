@@ -98,5 +98,10 @@ public interface EquipmentService {
      * @param userId the id of user whose equipment details are to be deleted.
      * */
     void deleteEquipmentByUserId(int userId);
+    
+	/**
+	 * @return the data corresponding to most popular categories based on no of equipments associated with each category.
+	 * */
+	ResponseEntity<?> getCategoryAnalytics();
 }
 

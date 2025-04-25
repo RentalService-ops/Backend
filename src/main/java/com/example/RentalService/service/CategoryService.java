@@ -69,5 +69,6 @@ public interface CategoryService {
 	 * @param userId the id of user whose category details are to be deleted.
 	 * */
 	void deleteCategoryByUserId(int userId);
+	
 }
 

@@ -59,7 +59,7 @@ public class AdminController {
 	@Autowired
 	private CategoryService categoryService;
 	
-	//Service to perform opertations on payment data.
+	//Service to perform operations on payment data.
 	@Autowired
 	private PaymentService paymentService;
 
@@ -282,5 +282,13 @@ public class AdminController {
 	@GetMapping("/getAllBookings")
 	public ResponseEntity<?> getAllBookings(){
 		return rentalBookingService.getAllBookingByAdmin();
+	}
+	
+	/**
+	 * Returns the top 4 category analytics based on no of equipments associated with each category.
+	 * */
+	@GetMapping("/getCategoryAnalytics")
+	public ResponseEntity<?> getCategoryAnalytics(){
+		return equipmentService.getCategoryAnalytics();
 	}
 }

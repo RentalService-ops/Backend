@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 
 import com.example.RentalService.model.Equipment;
 
@@ -58,4 +59,12 @@ public interface EquipmentRepo extends JpaRepository<Equipment, Integer> {
      * */
     @Modifying  //Annotation to add when using update , delete queries.
     void deleteEquipmentByUserId(int userId);
+    
+    
+    /**
+     * @return the data containing number of equipments associated with each category and category_id of
+     * top 4 categories based on the number of equipments associated with it.
+     * */
+    @Query(value="select count(category_id),category_id from equipment where  is_active=true group by category_id order by category_id desc fetch first 4 rows only",nativeQuery=true)
+    List<Object[]> getCategoryAnalytics(); 
 }

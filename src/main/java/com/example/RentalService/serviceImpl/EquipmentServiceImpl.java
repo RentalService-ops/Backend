@@ -6,8 +6,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -15,13 +17,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.example.RentalService.DTO.CategoryAnalyticsDTO;
 import com.example.RentalService.DTO.EquipmentDTO;
 import com.example.RentalService.Exceptions.ImageUnsupportedException;
 import com.example.RentalService.Exceptions.UserNotFoundException;
 import com.example.RentalService.model.Equipment;
 import com.example.RentalService.model.Users;
+import com.example.RentalService.repo.CategoryRepo;
 import com.example.RentalService.repo.EquipmentRepo;
-import com.example.RentalService.repo.RentalBookingRepository;
 import com.example.RentalService.service.AuthService;
 import com.example.RentalService.service.EquipmentService;
 
@@ -37,7 +40,8 @@ public class EquipmentServiceImpl implements EquipmentService{
     private AuthService userService;
     
     @Autowired
-    RentalBookingRepository rentalRepo;
+    @Lazy
+    private CategoryRepo categoryRepo;
 
     private static final String IMAGE_DIRECTORY = "D:\\java\\Project\\Backend\\src\\Image";
 
@@ -177,5 +181,19 @@ public class EquipmentServiceImpl implements EquipmentService{
     @Transactional
 	public void deleteEquipmentByUserId(int userId) {
 		equipmentRepo.deleteEquipmentByUserId(userId);		
+	}
+
+	@Override
+	public ResponseEntity<?> getCategoryAnalytics() {
+		
+		List<CategoryAnalyticsDTO> categoryData=equipmentRepo.getCategoryAnalytics()
+													.stream()
+													.map((object)-> new CategoryAnalyticsDTO(
+															((Number)object[0]).longValue(),
+															categoryRepo.findById(((Number)object[1]).intValue()).get().getName()
+															))
+													.collect(Collectors.toList());
+		
+		return ResponseEntity.ok(categoryData);
 	}
 }
