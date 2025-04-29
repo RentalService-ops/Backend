@@ -44,7 +44,7 @@ public class SecurityConfig {
         http
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .csrf(csrf -> csrf
-                .ignoringRequestMatchers("/ws/**") // ✅ Disable CSRF for WebSocket endpoint
+                .ignoringRequestMatchers("/ws/**") //  Disable CSRF for WebSocket endpoint
                 .disable()
             )
             .authorizeHttpRequests(auth -> auth

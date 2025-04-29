@@ -256,7 +256,6 @@ public class RentalBookingServiceImpl implements RentalBookingService{
 			bookings=rentalRepo.findBookingBySearchEquipment(pageable);
 			totalBookings=rentalRepo.countDistinctEquipmentId();
 		}
-		System.out.println(totalBookings);
 		Page<AdminBookingsDTO> bookingsDTO = new PageImpl<>(
 			    bookings.stream()
 			        .map(booking -> new AdminBookingsDTO(
@@ -297,7 +296,7 @@ public class RentalBookingServiceImpl implements RentalBookingService{
 	}
 	
 	
-	/***/
+	
 	@Async
 	@Transactional
 	@Scheduled(cron = "0 0 0/12 * * ?")//Scheduling method execution after every 12 hours
@@ -346,7 +345,6 @@ public class RentalBookingServiceImpl implements RentalBookingService{
 	public ResponseEntity<?> updateBooking(RentalBookingsDTO booking) {
 		
 		
-		System.out.println(booking.getAddressDTO().toString());
 		if(booking.getStatus() == BookingStatus.PENDING) {
 			LocalDate start = booking.getStartDate();
 			LocalDate end = booking.getEndDate();

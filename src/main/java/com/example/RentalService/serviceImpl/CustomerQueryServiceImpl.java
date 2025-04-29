@@ -13,30 +13,29 @@ import com.example.RentalService.repo.UserRepository;
 import com.example.RentalService.service.CustomerQueryService;
 
 @Service
-public class CustomerQueryServiceImpl implements CustomerQueryService{
-	
+public class CustomerQueryServiceImpl implements CustomerQueryService {
+
 	private CustomerQueryRepository queryRepo;
-	
+
 	@Autowired
 	private UserRepository userRepo;
-	
-	CustomerQueryServiceImpl(CustomerQueryRepository repo){
-		this.queryRepo=repo;
+
+	CustomerQueryServiceImpl(CustomerQueryRepository repo) {
+		this.queryRepo = repo;
 	}
-	
+
 	@Override
-	public void saveQuery(CustomerQuery query){
+	public void saveQuery(CustomerQuery query) {
 		query.setQueryStatus("pending");
 		try {
-		Users user=userRepo.findByEmail(query.getUseremail()).get();
-		if(user!=null) {
-		query.setUser(user);
-		}
-		}
-		catch(Exception e) {
+			Users user = userRepo.findByEmail(query.getUseremail()).get();
+			if (user != null) {
+				query.setUser(user);
+			}
+		} catch (Exception e) {
 		}
 		queryRepo.save(query);
-	}	
+	}
 
 	@Override
 	public List<CustomerQuery> getPendingQueries() {

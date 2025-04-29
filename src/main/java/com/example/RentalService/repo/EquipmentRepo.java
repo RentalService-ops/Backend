@@ -65,6 +65,7 @@ public interface EquipmentRepo extends JpaRepository<Equipment, Integer> {
      * @return the data containing number of equipments associated with each category and category_id of
      * top 4 categories based on the number of equipments associated with it.
      * */
-    @Query(value="select count(category_id),category_id from equipment where  is_active=true group by category_id order by category_id desc fetch first 6 rows only",nativeQuery=true)
+//    @Query(value="select count(category_id),category_id from equipment where  is_active=true group by category_id order by category_id desc fetch first 6 rows only",nativeQuery=true)
+    @Query(value="select count(category_id),category_id from equipment where  is_active=true group by category_id order by category_id desc limit 6",nativeQuery=true)
     List<Object[]> getCategoryAnalytics(); 
 }
