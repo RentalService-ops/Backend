@@ -28,10 +28,4 @@ public class NotificationController {
 	public ResponseEntity<?> getNotificationByUserId(@PathVariable("id") int id){
 		return notificationService.getnotificationByUserId(id);
 	}
-    
-    @PreAuthorize("hasRole('admin')")
-    @GetMapping("")
-    public ResponseEntity<?> getRecentNotifications(){
-    	return notificationService.getRecentNotifications();
-    }
 }

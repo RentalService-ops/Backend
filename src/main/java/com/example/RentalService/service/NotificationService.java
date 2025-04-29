@@ -12,8 +12,4 @@ public interface NotificationService {
      */
     ResponseEntity<?> getnotificationByUserId(Integer id);
     
-    /**
-     * @return Recent notifications
-     * */
-    ResponseEntity<?> getRecentNotifications();
 }

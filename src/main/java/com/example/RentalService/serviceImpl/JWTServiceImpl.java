@@ -37,8 +37,8 @@ public class JWTServiceImpl implements JWTService{
     	}
     	 
     	Map<String, Object> claims = new HashMap<>();
-        claims.put("user_id", userId);  // ✅ Add user_id to claims
-        claims.put("role", role);       // ✅ Keep role as a claim
+        claims.put("user_id", userId);  //  Add user_id to claims
+        claims.put("role", role);       //  Keep role as a claim
 
         return Jwts.builder()
                 .claims(claims)
@@ -49,24 +49,6 @@ public class JWTServiceImpl implements JWTService{
                 .compact();
     }
       
-      
-      @Override
-	  public String generateToken(String useremail) throws IllegalArgumentException{
-    	
-    	if(useremail==null) {
-    		 throw new IllegalArgumentException("Please provide all the details.");
-    	}
-    	 
-    	Map<String, Object> claims = new HashMap<>();
-        claims.put("email", useremail); 
-
-        return Jwts.builder()
-                .claims(claims)
-                .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + (1000 * 60 * 10)))
-                .signWith(getKey())
-                .compact();
-    }
     
   /**
    * Retrieves the HMAC secret key used for signing or verifying JWT tokens.
@@ -93,7 +75,7 @@ public class JWTServiceImpl implements JWTService{
      * Extract specified claim from token.
      * @param token token from which claim is to be extracted
      * @param claimResolver function that extracts desired claim from claims object
-     * @param <T> the type of the claim to be extracted.
+     * T the type of the claim to be extracted.
      * @return the extracted claim of type T. 
      * */
     private <T> T extractClaim(String token, Function<Claims, T> claimResolver) {

@@ -24,6 +24,7 @@ import com.example.RentalService.repo.UserRepository;
 import com.example.RentalService.service.AuthService;
 
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.transaction.Transactional;
 
 
 
@@ -59,6 +60,7 @@ public class AuthServiceImpl implements AuthService{
 	public Users findUsreById(int id) throws IllegalArgumentException{
 		return repo.findById(id).get();
 	}
+	
 	@Override
 	public ResponseEntity<?> verify(@RequestBody Users user, HttpServletResponse response) {
 		
@@ -120,7 +122,6 @@ public class AuthServiceImpl implements AuthService{
 	@Override
 	public boolean verifyOTP(BigInteger sentOTP,String email) {
 		if(email==null) {
-			System.out.println(email);
 			throw new IllegalArgumentException("Specify email.");
 		}
 		
@@ -130,7 +131,6 @@ public class AuthServiceImpl implements AuthService{
 		}
 
 		if(sentOTP.equals(user.getOTP())) {
-			System.out.println("true and true");
 			user.setOTP(null);
 			repo.save(user);
 			return true;
@@ -141,6 +141,7 @@ public class AuthServiceImpl implements AuthService{
 	}
 
 	@Override
+	@Transactional
 	public void resetPassword(String password, String email) {
 		// TODO Auto-generated method stub
 		if(email==null) {

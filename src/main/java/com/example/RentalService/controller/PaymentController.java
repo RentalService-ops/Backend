@@ -17,10 +17,7 @@ import com.razorpay.RazorpayException;
 
 import lombok.RequiredArgsConstructor;
 
-/**
- * Controller for handling Razorpay payment operations such as order creation,
- * verification, failure handling, and fetching payment history.
- */
+
 @RestController
 @RequestMapping("/api/payments")
 @RequiredArgsConstructor
@@ -91,6 +88,10 @@ public class PaymentController {
         return paymentService.getPaymentByUserId(id);
     }
     
+    /**
+     * @param id the id of the renter whose payment details are to be fetched
+     * @return ResponseEntity object with details related to payments associated with specific renter
+     * */
     @GetMapping("getRentalPayment/{id}")
     public ResponseEntity<?> getRentalPayments(@PathVariable int id){
     	return paymentService.getAllPaymentOfRental(id);

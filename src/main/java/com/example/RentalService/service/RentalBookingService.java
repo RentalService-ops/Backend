@@ -98,15 +98,16 @@ public interface RentalBookingService {
     
     /**
      * Adds the equipment quantity of the equipment based on provided Id and marks the booking status as returned.
-     * @param equipmentId the id of the equipment to be returned.
+     * @param bookingId the id of the booking containing booking data of the equipment to be returned.
      * */
-    ResponseEntity<?> returnEquipment(int equipmentId);
+    ResponseEntity<?> returnEquipment(int bookingId);
     
     /**
      * Updates booking based on given booking details
      * @param booking new booking data
      * */
     ResponseEntity<?> updateBooking(RentalBookingsDTO booking);
+    
     /**
      * Deletes bookings based on userId
      * @param userId the id of user whose booking data is to be deleted.

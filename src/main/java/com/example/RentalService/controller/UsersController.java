@@ -21,9 +21,7 @@ import com.example.RentalService.serviceImpl.CustomerQueryServiceImpl;
 import com.example.RentalService.serviceImpl.UsersServiceImpl;
 
 
-/**
- * Controller for handling User operations
- * */
+
 @RestController
 @RequestMapping("/api/user")
 public class UsersController {

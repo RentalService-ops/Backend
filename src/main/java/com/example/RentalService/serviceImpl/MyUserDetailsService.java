@@ -26,13 +26,13 @@ public class MyUserDetailsService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + email));
 
         // If role is stored in the User entity, dynamically assign the role
-        String role = user.getRole() != null ? user.getRole() : "USER"; // Use role from user entity or default to "USER"
+        String role = user.getRole() != null ? user.getRole() : "USER"; 
 
         // Build and return the UserDetails object
         return org.springframework.security.core.userdetails.User.builder()
-                .username(user.getEmail())  // Assuming `email` is used for username
-                .password(user.getPassword())  // Get the password from the User entity
-                .roles(role)  // Set the dynamic role from the user entity
+                .username(user.getEmail()) 
+                .password(user.getPassword()) 
+                .roles(role) 
                 .build();
     }
 }

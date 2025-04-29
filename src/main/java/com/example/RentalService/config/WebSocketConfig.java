@@ -13,6 +13,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     /**
      * Registers the WebSocket endpoint that the clients will use to connect to the WebSocket server.
+     * Uses STOMP (Simple Text Oriented Messaging Protocol) protocol for message communication.
      * SockJS is enabled to provide fallback options for browsers that don’t support WebSocket.
      *
      * @param registry the registry for STOMP endpoints

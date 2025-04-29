@@ -54,6 +54,7 @@ public class CategoryServiceImpl implements CategoryService{
 
 	
 	@Override
+	@Transactional
 	public ResponseEntity<?> deleteCategory(int id) throws DataIntegrityViolationException,IllegalArgumentException{
 		
 		Category category = repo.findById(id).get();

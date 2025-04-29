@@ -20,9 +20,7 @@ import com.example.RentalService.DTO.RentalBookingsDTO;
 import com.example.RentalService.model.Rental_Bookings;
 import com.example.RentalService.service.RentalBookingService;
 
-/**
- * Controller for handling equipment rental bookings.
- */
+
 @RestController
 @RequestMapping("/api/bookings")
 public class RentalBookingController {
@@ -104,12 +102,20 @@ public class RentalBookingController {
         return ResponseEntity.ok(new RentalBookingsDTO(service.rejectBooking(id)));
     }
     
+    /**
+     * Adds the equipment quantity of the equipment based on provided Id and marks the booking status as returned.
+     * @param bookingId the id of the booking containing booking data of the equipment to be returned.
+     * */
 	@PutMapping("/{bookingId}/return")
 	@PreAuthorize("hasRole('user')")
 	public ResponseEntity<?> returnEquipment(@PathVariable int bookingId) {
 	    return service.returnEquipment(bookingId);
 	}
 	
+	/**
+     * Updates booking based on given booking details
+     * @param booking new booking data
+     * */
 	@PutMapping("/updateBooking")
 	@PreAuthorize("hasRole('user')")
 	public ResponseEntity<?> updateBooking(@RequestBody RentalBookingsDTO request){

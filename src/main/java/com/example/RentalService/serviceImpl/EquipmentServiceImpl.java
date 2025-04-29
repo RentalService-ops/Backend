@@ -71,17 +71,14 @@ public class EquipmentServiceImpl implements EquipmentService{
     }
 
     private String storeImage(MultipartFile file) throws ImageUnsupportedException{
-        // Ensure directory exists
         File directory = new File(IMAGE_DIRECTORY);
         if (!directory.exists()) {
             directory.mkdirs();
         }
 
-        // Generate a unique filename
         String fileName = file.getOriginalFilename();
         Path filePath = Paths.get(IMAGE_DIRECTORY, fileName);
 
-        // Save file to disk
         Path path=null;
         
         try {
@@ -118,10 +115,10 @@ public class EquipmentServiceImpl implements EquipmentService{
         
         if(equipmentsObtained!=null) {
 			for(Equipment equipment : equipmentsObtained) {
-			   if(equipment.isActive() && equipment.getCategory()!=null) {
-				EquipmentDTO equipmentDTO = new EquipmentDTO(equipment);
-				equipments.add(equipmentDTO);
-			}
+				   if(equipment.isActive() && equipment.getCategory()!=null) {
+					EquipmentDTO equipmentDTO = new EquipmentDTO(equipment);
+					equipments.add(equipmentDTO);
+				}
 			}
 	        return ResponseEntity.ok(equipments);
 		}

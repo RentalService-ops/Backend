@@ -22,7 +22,6 @@ import com.example.RentalService.service.AuthService;
 import com.example.RentalService.service.CategoryService;
 
 
-//Controller for handling Category operations.
 @RestController
 @RequestMapping("/api/category/")
 public class CategoryController {

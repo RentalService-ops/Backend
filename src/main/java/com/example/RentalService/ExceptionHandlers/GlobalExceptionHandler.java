@@ -85,12 +85,12 @@ public class GlobalExceptionHandler {
 	/**
 	 * Handles custom exception when a user is not found in the system.
 	 * @param exception UserNotFoundException
-	 * @return ResponseEntity with NOT_FOUND status and error message
+	 * @return ResponseEntity with UNAUTHORIZED status and error message
 	 */
 	@ExceptionHandler(UserNotFoundException.class)
 	public ResponseEntity<?> handleUserNotFoundException(UserNotFoundException exception) {
 		log.error(exception.getMessage());
-		return ResponseEntity.status(404).body(exception.getMessage());
+		return ResponseEntity.status(401).body(exception.getMessage());
 	}
 
 	/**

@@ -14,6 +14,8 @@ import com.example.RentalService.repo.UserRepository;
 import com.example.RentalService.repo.addressRepo;
 import com.example.RentalService.service.AddressService;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class AddressServiceImpl implements AddressService{
 
@@ -29,7 +31,7 @@ public class AddressServiceImpl implements AddressService{
                 .get();
         
         if(user == null) {
-        	throw new UserNotFoundException("User not found with specified id");
+        	throw new UserNotFoundException("User not found with specified id.");
         }
 
         Address address = new Address(addressDTO.getStreet(), addressDTO.getCity(), addressDTO.getState(),
@@ -49,6 +51,7 @@ public class AddressServiceImpl implements AddressService{
     }
 
     @Override
+    @Transactional
 	public AddressDTO updateAddress(int addressId, AddressDTO addressDTO)  throws IllegalArgumentException{
         Address address = addressRepository.findById(addressId)
                 .orElseThrow(() -> new IllegalArgumentException("Address not found. Either id is null or address do not exist with specified id."));
@@ -64,6 +67,7 @@ public class AddressServiceImpl implements AddressService{
     }
 
     @Override
+    @Transactional
 	public void deleteAddress(int addressId)  throws IllegalArgumentException{
         if (!addressRepository.existsById(addressId)) {
             throw new IllegalArgumentException("Address not found. Either id is null or address do not exist with specified id.");
