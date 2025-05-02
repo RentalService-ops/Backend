@@ -49,6 +49,10 @@ public interface PaymentService {
      */
     ResponseEntity<?> getPaymentByUserId(int id);
     
+    /**
+     * @param id id of the renter whose payment details are to be found
+     * @return payment data corresponding to renter with provided id.
+     * */
     ResponseEntity<?> getAllPaymentOfRental(int id);
     
     /**

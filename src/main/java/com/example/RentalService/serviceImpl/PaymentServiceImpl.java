@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.example.RentalService.DTO.CreatePaymentRequestDTO;
 import com.example.RentalService.DTO.PaymentResponseDTO;
 import com.example.RentalService.DTO.VerifyPaymentRequestDTO;
+import com.example.RentalService.Exceptions.UserNotFoundException;
 import com.example.RentalService.model.BookingStatus;
 import com.example.RentalService.model.Equipment;
 import com.example.RentalService.model.Payment;
@@ -32,7 +33,6 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-
 @Transactional
 public class PaymentServiceImpl implements PaymentService {
 
@@ -46,7 +46,10 @@ public class PaymentServiceImpl implements PaymentService {
 	private final UserRepository usersRepository;
 	private final RentalBookingRepository rentalBookingRepository;
 	private final EquipmentRepo equipmentRepository;
-
+	
+	/**
+	 * @return new RazorpayClient connection for processing payment requests based on keyId and keySecret provided.
+	 */
 	private RazorpayClient getRazorpayClient() throws RazorpayException {
 		return new RazorpayClient(keyId, keySecret);
 	}
@@ -67,7 +70,7 @@ public class PaymentServiceImpl implements PaymentService {
 
 		// Fetch User and Booking information from DB
 		Users user = usersRepository.findById(request.getUserId())
-				.orElseThrow(() -> new RuntimeException("User not found"));
+				.orElseThrow(() -> new UserNotFoundException("User not found"));
 		Rental_Bookings booking = rentalBookingRepository.findById(request.getBookingId())
 				.orElseThrow(() -> new RuntimeException("Booking not found"));
 
@@ -76,16 +79,16 @@ public class PaymentServiceImpl implements PaymentService {
 		rentalBookingRepository.save(booking);
 		// Create Payment entity without payment ID and signature initially
 		Payment payment = Payment.builder().razorpayOrderId(razorOrder.get("id"))
-				.amount(request.getAmount().doubleValue()) // Save amount in INR
-				.currency("INR").status("CREATED") // Set the initial status to 'CREATED'
-				.paymentDate(java.time.LocalDate.now()) // Current date as payment date
-				.user(user).order(booking) // Associated order (rental booking)
+				.amount(request.getAmount().doubleValue())
+				.currency("INR").status("CREATED") 
+				.paymentDate(java.time.LocalDate.now())
+				.user(user).order(booking) 
 				.build();
 
-		// Save the payment record (without razorpay_payment_id)
+		
 		paymentRepository.save(payment);
 
-		// Return the Razorpay order details as a string (for front-end)
+		// Return the Razorpay order details
 		return razorOrder.toString();
 	}
 
@@ -94,17 +97,17 @@ public class PaymentServiceImpl implements PaymentService {
 		// Fetch payment using Razorpay Order ID
 		Payment payment = paymentRepository.findByRazorpayOrderId(request.getOrderId());
 		if (payment == null) {
-			return "Invalid Razorpay Order ID"; // Handle invalid order ID
+			return "Invalid Razorpay Order ID"; 
 		}
 
-		// Generate the signature for verification
+		
 		String data = request.getOrderId() + "|" + request.getPaymentId();
 		String generatedSignature = null;
 
 		try {
-			generatedSignature = Utils.getHash(data, keySecret); // Generate the hash for signature comparison
+			generatedSignature = Utils.getHash(data, keySecret); 
 		} catch (RazorpayException e) {
-			return "Error generating signature"; // Handle errors in signature generation
+			return "Error generating signature"; 
 		}
 
 		// Compare the generated signature with the received signature
@@ -166,12 +169,13 @@ public class PaymentServiceImpl implements PaymentService {
 
 		List<PaymentResponseDTO> rentalPayemnt = paymentRepository.findAll().stream()
 				.filter(payment -> payment.getOrder().getRenter().getId() == id)
-				.sorted((p1, p2) -> p2.getPaymentDate().compareTo(p1.getPaymentDate())) // descending
+				.sorted((p1, p2) -> p2.getPaymentDate().compareTo(p1.getPaymentDate())) 
 				.map(payment -> new PaymentResponseDTO(payment)).toList();
 
 		return ResponseEntity.ok(rentalPayemnt);
 	}
 
+	@Override
 	@Transactional
 	public void deletePaymentByUserId(int userId) {
 		paymentRepository.deletePaymentByUserId(userId);

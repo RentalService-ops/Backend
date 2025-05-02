@@ -28,7 +28,7 @@ public class JwtFilter extends OncePerRequestFilter {
 	
 	//Context object storing authentication details.
 	@Autowired
-     ApplicationContext context;
+    private ApplicationContext context;
 	
 	
 	/**

@@ -274,6 +274,12 @@ public class RentalBookingServiceImpl implements RentalBookingService{
 		return bookingsDTO;
 	}
 	
+	/**
+	 * Method used to get entity name from the booking details fetched for that entity
+	 * @param id id of the entity
+	 * @param searchBy search parameter used to get booking details for that entity
+	 * @return entity name based on the id and search value provided.
+	 * */
 	private String getName(int id,String searchBy) {
 		if(searchBy.equals("Equipment")) {
 			return equipmentRepo.findById(id).get().getName();
@@ -349,10 +355,10 @@ public class RentalBookingServiceImpl implements RentalBookingService{
 			LocalDate start = booking.getStartDate();
 			LocalDate end = booking.getEndDate();
 
-			long totalDays = ChronoUnit.DAYS.between(start, end);
+			long totalDays = ChronoUnit.DAYS.between(start, end);//Determining new total price based on total days and updated booking details.
 			
 			Address address = addressRepo.findById(booking.getAddressDTO().getId()).get();
-			Rental_Bookings currenBbooking = rentalRepo.findById(booking.getBookingId()).map(currentBbook -> {
+			Rental_Bookings currentBooking = rentalRepo.findById(booking.getBookingId()).map(currentBbook -> {
 				currentBbook.setEndDate(booking.getEndDate());
 				currentBbook.setStartDate(booking.getStartDate());
 				currentBbook.setTotalPrice(currentBbook.getEquipment().getPricePerDay()
@@ -363,7 +369,7 @@ public class RentalBookingServiceImpl implements RentalBookingService{
 				return rentalRepo.save(currentBbook);
 			}).get();
 			
-			return ResponseEntity.ok(new RentalBookingsDTO(currenBbooking));
+			return ResponseEntity.ok(new RentalBookingsDTO(currentBooking));
 		}else {
 			return ResponseEntity.badRequest().body("You Can't Modify Booking");
 		}
